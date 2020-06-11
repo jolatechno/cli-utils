@@ -1,0 +1,42 @@
+#!/bin/bash
+
+print_usage() {
+  printf "Usage: \"gitkey -u github_username -e github_email@mail.com -N passphrase -f key/file/name -k github_key_name\"
+  -u github username (mendatory)
+  -e github email (mendatory)
+  -N ssh key passphrase
+  -f ssh key file name
+
+  -h help
+  "
+}
+
+username=""
+email=""
+passphrase=''
+key_name="curl-key"
+file_name="id_rsa"
+
+while getopts 'u:e:Nfk' flag; do
+  case "${flag}" in
+  	u) username="${OPTARG}";;
+    e) email="${OPTARG}";;
+    N) passphrase="${OPTARG}";;
+    f) file_name="${OPTARG}" ;;
+    k) key_name="${OPTARG}" ;;
+    *) print_usage
+       exit 1 ;;
+    h) print_usage
+  esac
+done
+
+file="/home/$(whoami)/.ssh/$file_name"
+
+git config --global user.name $username
+git config --global user.email $email
+
+ssh-keygen -f $file -N $passphrase -t rsa -b 4096 -C $email
+
+key="$(cat $file.pub)"
+
+curl -u $username --data "{\"title\":\"$key_name\",\"key\":\"$key\"}" https://api.github.com/user/keys

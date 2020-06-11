@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for filename in ./cmds/*; do
+	echo "copying $filename to /usr/bin/$filename"
+    chmod +x $filename
+	cp $filename /usr/bin/
+done

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cpus="$(grep -c ^processor /proc/cpuinfo)"
+
+git clone --recurse-submodules -j$cpus $*
