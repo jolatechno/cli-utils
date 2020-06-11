@@ -3,7 +3,7 @@ additional command to make using the git cli with github easier. Also help with 
 
 ## Installation
 
-use `bash ./init` or `chmod +x ./init && ./init` to init all the commands.
+use `bash ./init` or `chmod +x ./init && sudo ./init` to init all the commands.
 
 ## Usage
 
