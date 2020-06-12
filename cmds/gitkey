@@ -13,7 +13,7 @@ print_usage() {
 
 username=""
 email=""
-passphrase=''
+passphrase=Null
 key_name="curl-key"
 file_name="id_rsa"
 
@@ -35,7 +35,11 @@ file="/home/$(whoami)/.ssh/$file_name"
 git config --global user.name $username
 git config --global user.email $email
 
-ssh-keygen -f $file -N $passphrase -t rsa -b 4096 -C $email
+if [ -z "$passphrase" ]; then
+  ssh-keygen -f $file -t rsa -b 4096 -C $email
+else
+  ssh-keygen -f $file -N $passphrase -t rsa -b 4096 -C $email
+fi
 
 key="$(cat $file.pub)"
 
