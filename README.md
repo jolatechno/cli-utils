@@ -32,3 +32,7 @@ Usage: "gitkey -u github_username -e github_email@mail.com -N passphrase -f key/
 ### gitdown
 
 `gitdown ...` is exatly like `git clone --recurse-submodules -j $N ...` with `$N` being the number of thread that your computer has.
+
+### initall
+
+`initall $directory1 $directory2 ...` will go through every file in each specified directory and install it if it is a `.deb` file and integrate it using [AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher) if it is a `.AppImage` or `.appimage` file.

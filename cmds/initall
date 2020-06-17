@@ -1,0 +1,23 @@
+#!/bin/bash
+
+for directory in $*; do
+	echo "going through $directory ..."
+
+	for filename in $directory/*; do
+		echo "found $filename"
+
+		if [[ $filename =~ \.deb$ ]]; then
+			echo "installing $filename..."
+
+			apt install -y $filename
+		fi
+
+		if [[ $filename =~ \.AppImage$ ] || [ $filename =~ \.appimage$ ]]; then
+			echo "integrating $filename..."
+
+			chmod +x $filename && \
+			ail-cli integrate $filename && \
+			cd $directory
+		fi
+	done
+done
