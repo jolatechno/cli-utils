@@ -3,7 +3,7 @@ additional command to make using the git cli with github easier. Also help with 
 
 ## Installation
 
-use `bash ./init` or `chmod +x ./init && sudo ./init` to init all the commands.
+use `sudo bash ./init` or `chmod +x ./init && sudo ./init` to init all the commands.
 
 ## Usage
 
@@ -36,3 +36,20 @@ Usage: "gitkey -u github_username -e github_email@mail.com -N passphrase -f key/
 ### initall
 
 `initall $directory1 $directory2 ...` will go through every file in each specified directory and install it if it is a `.deb` file and integrate it using [AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher) if it is a `.AppImage` or `.appimage` file.
+
+`initall` will check if `AppImageLauncher` is installed each time it is used and install it if it's not.
+
+### smbadd
+
+`smbadd` will create a new samba share with the specified parameters.
+
+`smbadd` will check if `samba` is installed each time it is used and install it if it's not.
+
+```
+Usage: " sudo smdadd -n share_name -f share_path -u share_allowed_user"
+  -u allowed user (if not specified will be $(whoami))
+  -n share name (mendatory)
+  -f share path (mendatory)
+
+  -h help
+```

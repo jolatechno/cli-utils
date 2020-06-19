@@ -1,11 +1,5 @@
 #!/bin/bash
 
-
-echo "installing appimagelauncher ..."
-add-apt-repository -y ppa:appimagelauncher-team/stable && \
-apt update -y && \
-apt install -y appimagelauncher
-
 for filename in ./cmds/*; do
 	echo "copying $filename to /usr/bin/$filename ..."
 

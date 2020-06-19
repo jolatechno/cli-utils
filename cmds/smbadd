@@ -1,0 +1,57 @@
+#!/bin/bash
+
+print_usage() {
+  printf "Usage: \" sudo smdadd -n share_name -f share_path -u share_allowed_user \"
+  -n share name (mendatory)
+  -f share path (mendatory)
+  -u allowed user (if not specified will be $(whoami))
+
+  -h help
+  "
+}
+
+echo "checking if samba is installed ..."
+
+if ! res="$(type -p "samba")" || [[ -z $res ]]; then
+	echo "installing samba ..."
+
+	apt install -y samba
+fi
+
+user="$(whoami)"
+name=""
+path=""
+
+
+while getopts 'n:f:u' flag; do
+  case "${flag}" in
+    n) name="${OPTARG}";;
+    f) path="${OPTARG}";;
+    u) user="${OPTARG}";;
+    h) print_usage
+  esac
+done
+
+param="[$name]
+        path = $path
+        read only = no
+        browseable = yes
+        hide dot files = yes
+        guest ok = no
+        valid user = $user
+        public = no
+        create mode = 0777
+        directory mode = 0777
+        read raw = yes
+        write raw = yes
+        socket option = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=131072 SO_SNDBUF=131072
+        min receivefile size = 16384
+        use sendfile = true
+        aio read size = 16384
+        aio write size = 16384
+        getwd cache = true
+        write cache size = 2097152"
+
+smbpasswd -a $user && \
+echo $param >> /etc/samba/smb.conf && \
+service smbd restart

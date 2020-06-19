@@ -1,5 +1,15 @@
 #!/bin/bash
 
+echo "checking if appimagelauncher is installed ..."
+
+if ! res="$(type -p "ail-cli")" || [[ -z $res ]]; then
+	echo "installing appimagelauncher ..."
+
+	add-apt-repository -y ppa:appimagelauncher-team/stable && \
+	apt update -y && \
+	apt install -y appimagelauncher
+fi
+
 for directory in $*; do
 	echo "going through $directory ..."
 
