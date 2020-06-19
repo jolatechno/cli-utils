@@ -1,7 +1,7 @@
 #!/bin/bash
 
 print_usage() {
-  printf "Usage: \" sudo smdadd -n share_name -f share_path -u share_allowed_user \"
+  printf "Usage: \" sudo smbcreate -n share_name -f share_path -u share_allowed_user \"
   -n share name (mendatory)
   -f share path (mendatory)
   -u allowed user (if not specified will be $(whoami))
@@ -28,6 +28,8 @@ while getopts 'n:f:u' flag; do
     n) name="${OPTARG}";;
     f) path="${OPTARG}";;
     u) user="${OPTARG}";;
+    *) print_usage
+       exit 1 ;;
     h) print_usage
   esac
 done

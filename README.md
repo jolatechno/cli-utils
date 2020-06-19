@@ -50,7 +50,7 @@ Usage: "gitkey -u github_username -e github_email@mail.com -N passphrase -f key/
 `smbinit` will create a new samba share with the specified parameters.
 
 ```
-Usage: " sudo smdadd -n share_name -f share_path -u share_allowed_user"
+Usage: " sudo smbinit -n share_name -f share_path -u share_allowed_user"
   -u allowed user (if not specified will be $(whoami))
   -n share name (mendatory)
   -f share path (mendatory)
