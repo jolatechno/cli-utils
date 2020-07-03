@@ -56,5 +56,5 @@ param="\n
 \t\t        write cache size = 2097152\n"
 
 smbpasswd -a $user && \
-echo $param >> /etc/samba/smb.conf && \
+echo -e $param >> /etc/samba/smb.conf && \
 service smbd restart
