@@ -34,25 +34,26 @@ while getopts 'n:f:u' flag; do
   esac
 done
 
-param="[$name]
-        path = $path
-        read only = no
-        browseable = yes
-        hide dot files = yes
-        guest ok = no
-        valid user = $user
-        public = no
-        create mode = 0777
-        directory mode = 0777
-        read raw = yes
-        write raw = yes
-        socket option = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=131072 SO_SNDBUF=131072
-        min receivefile size = 16384
-        use sendfile = true
-        aio read size = 16384
-        aio write size = 16384
-        getwd cache = true
-        write cache size = 2097152"
+param="\n
+[$name]\n
+\t\t        path = $path\n
+\t\t        read only = no\n
+\t\t        browseable = yes\n
+\t\t        hide dot files = yes\n
+\t\t        guest ok = no\n
+\t\t        valid user = $user\n
+\t\t        public = no\n
+\t\t        create mode = 0777\n
+\t\t        directory mode = 0777\n
+\t\t        read raw = yes\n
+\t\t        write raw = yes\n
+\t\t        socket option = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=131072 SO_SNDBUF=131072\n
+\t\t        min receivefile size = 16384\n
+\t\t        use sendfile = true\n
+\t\t        aio read size = 16384\n
+\t\t        aio write size = 16384\n
+\t\t        getwd cache = true\n
+\t\t        write cache size = 2097152\n"
 
 smbpasswd -a $user && \
 echo $param >> /etc/samba/smb.conf && \
