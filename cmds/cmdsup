@@ -26,7 +26,7 @@ SOFTWARE.
 
 print_usage() {
   printf "$License
-Usage: \" gogit \"
+Usage: \" sudo cmdsup \"
 
   -h help
 "
@@ -39,10 +39,8 @@ while getopts 'h' flag; do
   esac
 done
 
-hash="$(TZ=UTC git --no-pager show \
-  --quiet \
-  --abbrev=12 \
-  --date='format-local:%Y%m%d%H%M%S' \
-  --format="%cd-%h")"
-
-echo "v0.0.0-$hash"
+git clone https://github.com/jolatechno/git-cli-utils.git && \
+cd git-cli-utils && \
+bash ./init && \
+cd .. && \
+sudo rm -r git-cli-utils

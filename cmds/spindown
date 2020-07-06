@@ -26,23 +26,30 @@ SOFTWARE.
 
 print_usage() {
   printf "$License
-Usage: \" gogit \"
+Usage: \" sudo spindown -d drive_device_name -t time \"
+  -t spin down time (default is 25, see hdparm for more info)
+  -d drive name (default is \"sda\")
 
   -h help
 "
 }
 
-while getopts 'h' flag; do
+drive="sda"
+time=25
+
+while getopts 'tdh' flag; do
   case "${flag}" in
+    t) time="${OPTARG}";;
+    d) drive="${OPTARG}";;
     h) print_usage;
       exit 1;;
   esac
 done
 
-hash="$(TZ=UTC git --no-pager show \
-  --quiet \
-  --abbrev=12 \
-  --date='format-local:%Y%m%d%H%M%S' \
-  --format="%cd-%h")"
+param="\n
+command_line {\n
+/t    hdparm -S $time /dev/$drive\n
+}\n"
 
-echo "v0.0.0-$hash"
+echo -e $param >> /etc/hdparm.conf
+hdparm -S $time /dev/$drive

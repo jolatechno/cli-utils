@@ -7,6 +7,12 @@ use `sudo bash ./init` or `chmod +x ./init && sudo ./init` to init all the comma
 
 ***IMPORTANT:*** the `./init` file will **only** move file to the `/usr/bin/` directory (and not install anything else), but some commands (like `initall` and `smbinit`) will check if some software is installed and install it if not **without prompting the user**. If you don't want any software install **just don't run them**. Those command are marked in the readme by an _(installation required)_ in the title.
 
+## updating
+
+### cmdsup
+
+`sudo cmdsup` will clone this directory, re-install all the command and delete it.
+
 ## Usage
 
 ### gogit
@@ -35,19 +41,31 @@ Usage: "gitkey -u github_username -e github_email@mail.com -N passphrase -f key/
 
 `gitdown ...` is exatly like `git clone --recurse-submodules -j $N ...` with `$N` being the number of thread that your computer has.
 
+### spindown
+
+`sudo spindowsn` will set a spindown delay on a specific hard drive.
+
+```
+Usage: " sudo spindown -d drive_device_name -t time "
+-t spin down time (default is 25, see hdparm for more info)
+-d drive name (default is "sda")
+
+-h help
+```
+
 ### initall _(installation required)_
 
 **required package:**
  - AppImageLauncher
 
-`initall $directory1 $directory2 ...` will go through every file in each specified directory and install it if it is a `.deb` file and integrate it using [AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher) if it is a `.AppImage` or `.appimage` file.
+`sudo initall $directory1 $directory2 ...` will go through every file in each specified directory and install it if it is a `.deb` file and integrate it using [AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher) if it is a `.AppImage` or `.appimage` file.
 
 ### smbinit _(installation required)_
 
 **required package:**
  - samba
 
-`smbinit` will create a new samba share with the specified parameters.
+`sudo smbinit` will create a new samba share with the specified parameters.
 
 ```
 Usage: " sudo smbinit -n share_name -f share_path -u share_allowed_user"
