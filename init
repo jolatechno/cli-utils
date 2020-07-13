@@ -31,7 +31,7 @@ fi
 
 print_usage() {
   printf "$License
-Usage: \" sudo init target1 target2 ... \"
+Usage: \"sudo init target1 target2 ... \"
 	-a install all targets
 
   -h help

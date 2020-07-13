@@ -17,7 +17,15 @@ Use `sudo cmdsup target1 target2 ...` to update all of the commands.
 
 `sudo cmdsup target1 target2 ...` will clone this directory, re-install all the command (using the `target1 target2 ...` as parameters for the `./init` script) and delete it.
 
-### git
+```
+Usage: "sudo cmdsup target1 target2 ... "
+  -a install all targets
+  -u update already installed package
+
+  -h help
+```
+
+### _git_
 
 #### gogit
 
@@ -45,7 +53,7 @@ Usage: "gitkey -u github_username -e github_email@mail.com -N passphrase -f key/
 
 `gitdown ...` is exatly like `git clone --recurse-submodules -j $N ...` with `$N` being the number of thread that your computer has.
 
-### nas
+### _nas_
 
 #### spindown
 
@@ -72,11 +80,17 @@ Usage: " sudo smbinit -n share_name -f share_path -u share_allowed_user"
   -h help
 ```
 
-### 3dPrinting
+### _3dPrinting_
 
+#### param
 
+`sudo param ...` will change the parameters for the `scale` command.
 
-### desktop
+#### scale
+
+`scale file1 file2 ...` will scale `file1 file2 ...` according to the parameters set by the `param` command.
+
+#### _desktop_
 
 ### initall
 
