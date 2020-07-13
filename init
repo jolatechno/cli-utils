@@ -39,11 +39,12 @@ fi
 
 param=$*
 
-while getopts 'ha' flag; do
+while getopts 'hau' flag; do
   case "${flag}" in
     h) print_usage;
       exit 1;;
 		a) param=*;;
+		u) param=$(</etc/git-cli-utils/installed.conf);;
   esac
 done
 
@@ -53,8 +54,12 @@ echo "installing base ..."
 cd ./base && bash ./init && cd ..
 echo ""
 
+echo "" > /etc/git-cli-utils/installed.conf
+
 for directory in $param; do
-	if [[ ! "$param" -ef ./base ]] ; then
+	if [[ ! "$directory" -ef ./base ]] ; then
+		echo "$directory " >> /etc/git-cli-utils/installed.conf
+
 		echo "installing $directory ..."
 		cd $directory && bash ./init && cd ..
 		echo ""
