@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 License = '''MIT License
 
@@ -21,15 +21,26 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
 '''
 
 import json
 import sys
+import os
 
 def print_usage():
     print(License)
+    print("scale file1 file2 ...")
     sys.exit()
+
+if not os.getuid() == 0:
+    print("root privilege needed...")
+    sys.exit()
+
+if len(sys.argv) == 1:
+    print_usage()
+
+if sys.argv[1] == "-h":
+    print_usage()
 
 List = '1234567890.'
 file_name = '/etc/git-cli-utils/3dPrinting/params.json'
@@ -42,16 +53,10 @@ with open(file_name, 'r') as infile:
     base_height = data['base_height']
     offset = data['offset']
 
-if len(sys.argv) == 1:
-    print_usage()
-
-if sys.argv[1] == "-h":
-    print_usage()
-
 for name in sys.argv[1:]:
-    lines = open(name + '.gcode', 'r').readlines()
+    lines = open(name, 'r').readlines()
 
-    with open(name + '.gcode', 'w') as in_file:
+    with open(name, 'w') as in_file:
         for line in lines:
             if line[:3] in ['G0 ', 'G1 '] and axis in line:
 

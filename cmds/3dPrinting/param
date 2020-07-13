@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 License = '''MIT License
 
@@ -21,24 +21,28 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
 '''
 
 import json
 import sys
+import os
 
 def print_usage():
     print(License)
-    print("axis (char, 'X', 'Y' or 'Z'), scaling_factor (float), base_height (float), offset (float)")
+    print("Usage: \"sudo param axis (char, 'X', 'Y' or 'Z'), scaling_factor (float), base_height (float), offset (float)\"")
     sys.exit()
+
+if not os.getuid() == 0:
+    print("root privilege needed...")
+    sys.exit()
+
+if len(sys.argv) == 1:
+    print_usage()
 
 file_name = '/etc/git-cli-utils/3dPrinting/params.json'
 
 with open(file_name, 'r') as infile:
     data = json.load(infile)
-
-if len(sys.argv) == 1:
-    print_usage()
 
 if len(sys.argv) > 1:
 	axis = sys.argv[1]

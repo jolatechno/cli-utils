@@ -26,7 +26,7 @@ SOFTWARE.
 
 print_usage() {
   printf "$License
-Usage: \" sudo smbcreate -n share_name -f share_path -u share_allowed_user \"
+Usage: \"sudo smbcreate -n share_name -f share_path -u share_allowed_user\"
   -n share name (mendatory)
   -f share path (mendatory)
   -u allowed user (if not specified will be $(whoami))

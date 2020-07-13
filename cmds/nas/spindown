@@ -26,7 +26,7 @@ SOFTWARE.
 
 print_usage() {
   printf "$License
-Usage: \" sudo spindown -d drive_device_name -t time \"
+Usage: \"sudo spindown -d drive_device_name -t time\"
   -t spin down time (default is 25, see hdparm for more info)
   -d drive name (default is \"sda\")
 
