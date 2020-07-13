@@ -7,8 +7,10 @@ if [ ! -f "/etc/git-cli-utils/3dPrinting/params.json" ]; then
 fi
 
 for filename in *; do
-	echo "copying $filename to /usr/bin/$filename ..."
+	if [[ ! "$filename" -ef ./init ]] ; then
+		echo "copying $filename to /usr/bin/$filename ..."
 
-	chmod +x $filename && \
-	cp $filename /usr/bin/
+		chmod +x $filename && \
+		cp $filename /usr/bin/
+	fi
 done
