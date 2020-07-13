@@ -35,14 +35,6 @@ Usage: \" sudo smbcreate -n share_name -f share_path -u share_allowed_user \"
 "
 }
 
-echo "checking if samba is installed ..."
-
-if ! res="$(type -p "samba")" || [[ -z $res ]]; then
-	echo "installing samba ..."
-
-	apt install -y samba
-fi
-
 user="$(whoami)"
 name=""
 path=""

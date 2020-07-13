@@ -26,7 +26,8 @@ SOFTWARE.
 
 print_usage() {
   printf "$License
-Usage: \" sudo initall directory1 directory2 ... \"
+Usage: \" sudo cmdsup target1 target2 ... \"
+  -a install all targets
 
   -h help
 "
@@ -39,34 +40,8 @@ while getopts 'h' flag; do
   esac
 done
 
-echo "checking if appimagelauncher is installed ..."
-
-if ! res="$(type -p "ail-cli")" || [[ -z $res ]]; then
-	echo "installing appimagelauncher ..."
-
-	add-apt-repository -y ppa:appimagelauncher-team/stable && \
-	apt update -y && \
-	apt install -y appimagelauncher
-fi
-
-for directory in $*; do
-	echo "going through $directory ..."
-
-	for filename in $directory/*; do
-		echo "found $filename"
-
-		if [[ $filename =~ \.deb$ ]]; then
-			echo "installing $filename..."
-
-			apt install -y $filename
-		fi
-
-		if [[ $filename =~ \.AppImage$ ] || [ $filename =~ \.appimage$ ]]; then
-			echo "integrating $filename..."
-
-			chmod +x $filename && \
-			ail-cli integrate $filename && \
-			cd $directory
-		fi
-	done
-done
+git clone https://github.com/jolatechno/git-cli-utils.git && \
+cd git-cli-utils && \
+bash ./init $* && \
+cd .. && \
+sudo rm -r git-cli-utils

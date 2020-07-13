@@ -26,7 +26,7 @@ SOFTWARE.
 
 print_usage() {
   printf "$License
-Usage: \" sudo cmdsup \"
+Usage: \" sudo initall directory1 directory2 ... \"
 
   -h help
 "
@@ -39,8 +39,24 @@ while getopts 'h' flag; do
   esac
 done
 
-git clone https://github.com/jolatechno/git-cli-utils.git && \
-cd git-cli-utils && \
-bash ./init && \
-cd .. && \
-sudo rm -r git-cli-utils
+for directory in $*; do
+	echo "going through $directory ..."
+
+	for filename in $directory/*; do
+		echo "found $filename"
+
+		if [[ $filename =~ \.deb$ ]]; then
+			echo "installing $filename..."
+
+			apt install -y $filename
+		fi
+
+		if [[ $filename =~ \.AppImage$ ] || [ $filename =~ \.appimage$ ]]; then
+			echo "integrating $filename..."
+
+			chmod +x $filename && \
+			ail-cli integrate $filename && \
+			cd $directory
+		fi
+	done
+done
