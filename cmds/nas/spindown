@@ -46,6 +46,11 @@ while getopts 'tdh' flag; do
   esac
 done
 
+if [ "$(id -un)" != "root" ]; then
+    echo "root privilege needed..."
+    exit 1
+fi
+
 param="\n
 command_line {\n
 /t    hdparm -S $time /dev/$drive\n

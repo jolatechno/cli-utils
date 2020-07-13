@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$(id -un)" != "root" ]; then
+    echo "root privilege needed..."
+    exit 1
+fi
+
 for filename in *; do
 	if [[ ! "$filename" -ef ./init ]] ; then
 		echo "copying $filename to /usr/bin/$filename ..."

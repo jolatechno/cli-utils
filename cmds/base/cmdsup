@@ -34,12 +34,17 @@ Usage: \" sudo cmdsup target1 target2 ... \"
 "
 }
 
-while getopts 'h' flag; do
+while getopts 'hua' flag; do
   case "${flag}" in
     h) print_usage;
       exit 1;;
   esac
 done
+
+if [ "$(id -un)" != "root" ]; then
+    echo "root privilege needed..."
+    exit 1
+fi
 
 git clone https://github.com/jolatechno/git-cli-utils.git && echo "" && \
 cd git-cli-utils && \

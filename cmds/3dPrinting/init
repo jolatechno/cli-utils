@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$(id -un)" != "root" ]; then
+    echo "root privilege needed..."
+    exit 1
+fi
+
 if [ ! -f "/etc/git-cli-utils/3dPrinting/params.json" ]; then
 	echo "creating /etc/git-cli-utils/3dPrinting"
 	mkdir /etc/git-cli-utils/3dPrinting

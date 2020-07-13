@@ -52,6 +52,11 @@ while getopts 'n:f:uh' flag; do
   esac
 done
 
+if [ "$(id -un)" != "root" ]; then
+    echo "root privilege needed..."
+    exit 1
+fi
+
 param="\n
 [$name]\n
 \t        path = $path\n
