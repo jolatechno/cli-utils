@@ -41,8 +41,8 @@ while getopts 'h' flag; do
   esac
 done
 
-git clone https://github.com/jolatechno/git-cli-utils.git && \
+git clone https://github.com/jolatechno/git-cli-utils.git && echo "" && \
 cd git-cli-utils && \
 bash ./init $* && \
 cd .. && \
-sudo rm -r git-cli-utils
+rm -r git-cli-utils
