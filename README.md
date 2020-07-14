@@ -54,25 +54,29 @@ Usage: "gitkey -u github_username -e github_email@mail.com -N passphrase -f key/
 `sudo spindowsn` will set a spindown delay on a specific hard drive.
 
 ```
-Usage: " sudo spindown -d drive_device_name -t time "
+Usage: "sudo spindown -d drive_device_name -t time"
 -t spin down time (default is 25, see hdparm for more info)
 -d drive name (default is "sda")
 
 -h help
 ```
 
-#### smbinit
+#### smbadd
 
-`sudo smbinit` will create a new samba share with the specified parameters.
+`sudo smbadd` will create a new samba share with the specified parameters.
 
 ```
-Usage: " sudo smbinit -n share_name -f share_path -u share_allowed_user"
+Usage: "sudo smbadd -n share_name -f share_path -u share_allowed_user"
   -u allowed user (if not specified will be $(whoami))
   -n share name (mendatory)
   -f share path (mendatory)
 
   -h help
 ```
+
+#### smbdel
+
+`sudo smbdel share_name1 share_name2 ...` will delete the samba share named `share_name1 share_name2 ...`.
 
 ### _3dPrinting_
 
