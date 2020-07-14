@@ -43,7 +43,7 @@ if [ "$(id -un)" != "root" ]; then
     exit 1
 fi
 
-git clone https://github.com/jolatechno/git-cli-utils.git && echo "" && \
-((cd git-cli-utils && \
+git clone https://github.com/jolatechno/cli-utils.git /tmp/cli-utils && echo "" && \
+((cd /tmp/cli-utils && \
 make update ); \
-rm -r ./git-cli-utils )
+rm -r /tmp/cli-utils )
