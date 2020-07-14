@@ -48,5 +48,5 @@ fi
 
 git clone https://github.com/jolatechno/git-cli-utils.git && echo "" && \
 ((cd git-cli-utils && \
-make $* ); \
+make update ); \
 rm -r ./git-cli-utils )

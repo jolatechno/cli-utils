@@ -17,15 +17,7 @@ Use `sudo cmdsup target1 target2 ...` to update all of the commands.
 
 #### cmdsup
 
-`sudo cmdsup target1 target2 ...` will clone this directory, re-install all the command (using the `target1 target2 ...` as parameters for the `./init` script) and delete it.
-
-```
-Usage: "sudo cmdsup target1 target2 ... "
-  `update` to update already installed package
-  `all` to install all package
-
-  -h help
-```
+`sudo cmdsup` will clone this directory, update all installed command then and delete it.
 
 ### _git_
 

@@ -3,6 +3,10 @@ MKDIR := mkdir
 FILE=/etc/git-cli-utils/.conf
 TARGETS:= $(shell cat ${FILE})
 
+ifndef VERBOSE
+.SILENT:
+endif
+
 all: desktop 3dPrinting git nas
 
 update: $(TARGETS)
@@ -13,17 +17,17 @@ desktop: base
 	cd cmds/desktop && $(MAKE)
 
 3dPrinting: base
-	@echo "installing 3dPrinting..."
+	@echo "\ninstalling 3dPrinting..."
 	@echo "3dPrinting " >> $(FILE)
 	cd cmds/3dPrinting && $(MAKE)
 
 git: base
-	@echo "installing git..."
+	@echo "\ninstalling git..."
 	@echo "git " >> $(FILE)
 	cd cmds/git && $(MAKE)
 
 nas: base
-	@echo "installing nas..."
+	@echo "\ninstalling nas..."
 	@echo "nas " >> $(FILE)
 	cd cmds/nas && $(MAKE)
 

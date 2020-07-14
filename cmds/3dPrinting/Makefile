@@ -3,7 +3,7 @@ MKDIR := mkdir
 all: create_file
 	for filename in *; do \
 		if [ ! "$$filename" -ef ./Makefile ] ; then \
-			echo "copying $$filename to /usr/bin/$$filename ..."; \
+			echo "copying $$filename to /usr/bin/$$filename..."; \
 			chmod +x $$filename && \
 			cp $$filename /usr/bin/; \
 		fi \
