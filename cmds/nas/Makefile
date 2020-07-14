@@ -1,8 +1,8 @@
 all:
 	for filename in *; do \
 		if [ ! "$$filename" -ef ./Makefile ] ; then \
-			echo "copying $$filename to /usr/bin/$$filename..."; \
 			chmod +x $$filename && \
-			cp $$filename /usr/bin/; \
+			cp $$filename /usr/bin/ && \
+			echo "copied $$filename to /usr/bin/$$filename"; \
 		fi \
 	done

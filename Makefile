@@ -31,7 +31,7 @@ nas: base
 	@echo "nas " >> $(FILE)
 	cd cmds/nas && $(MAKE)
 
-base: create_dir
+base: check_auth create_dir
 	@echo "" > $(FILE)
 	@echo "installing base..."
 	cd cmds/base && $(MAKE)
@@ -39,4 +39,10 @@ base: create_dir
 create_dir:
 ifeq ($(wildcard /etc/git-cli-utils/),)
 	${MKDIR} /etc/git-cli-utils/
+endif
+
+check_auth:
+ifneq ($(shell id -u), 0)
+	@echo "root privilege needed..."
+	false
 endif
