@@ -11,13 +11,13 @@ If you want to install all the target you can run `sudo make all`, if you run `s
 
 ## updating
 
-Use `sudo cmdsup target1 target2 ...` to update all of the commands.
+Use `sudo cmdsup` to update all installed commands.
 
 ## Usage
 
 #### cmdsup
 
-`sudo cmdsup` will clone this directory, update all installed command then and delete it.
+`sudo cmdsup` will clone this directory, update all installed commands then and delete it.
 
 ### _git_
 

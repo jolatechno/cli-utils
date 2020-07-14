@@ -26,9 +26,7 @@ SOFTWARE.
 
 print_usage() {
   printf "$License
-Usage: \"sudo cmdsup target1 target2 ...\"
-  \`update\` to update already installed package
-  \`all\` to install all package
+Usage: \"sudo cmdsup\"
 
   -h help
 "
