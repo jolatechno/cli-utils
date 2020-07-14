@@ -3,9 +3,11 @@ additional command to make using the git cli with github easier. Also help with 
 
 ## Installation
 
-use `sudo bash ./init` or `chmod +x ./init && sudo ./init` to init all the commands.
+use `sudo make target1 target2 ...` to init all the commands.
 
-If you don't want to install all the targets you can just run `sudo ./init target1 target2 ...` with `targetn` being one of the name of the directories inside the `cmds` directory.
+If you want to install all the target you can run `sudo make all`, if you run `sudo make`, only the `base` target will be installed.
+
+`sudo make update` will only update already installed package
 
 ## updating
 
@@ -13,14 +15,14 @@ Use `sudo cmdsup target1 target2 ...` to update all of the commands.
 
 ## Usage
 
-### cmdsup
+#### cmdsup
 
 `sudo cmdsup target1 target2 ...` will clone this directory, re-install all the command (using the `target1 target2 ...` as parameters for the `./init` script) and delete it.
 
 ```
 Usage: "sudo cmdsup target1 target2 ... "
-  -a install all targets
-  -u update already installed package
+  `update` to update already installed package
+  `all` to install all package
 
   -h help
 ```

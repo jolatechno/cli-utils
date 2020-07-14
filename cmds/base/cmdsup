@@ -27,14 +27,14 @@ SOFTWARE.
 print_usage() {
   printf "$License
 Usage: \"sudo cmdsup target1 target2 ...\"
-  -a install all targets
-  -u update already installed package
+  \`update\` to update already installed package
+  \`all\` to install all package
 
   -h help
 "
 }
 
-while getopts 'hua' flag; do
+while getopts 'h' flag; do
   case "${flag}" in
     h) print_usage;
       exit 1;;
@@ -47,7 +47,6 @@ if [ "$(id -un)" != "root" ]; then
 fi
 
 git clone https://github.com/jolatechno/git-cli-utils.git && echo "" && \
-cd git-cli-utils && \
-bash ./init $* && \
-cd .. && \
-rm -r git-cli-utils
+((cd git-cli-utils && \
+make $* ); \
+rm -r ./git-cli-utils )
