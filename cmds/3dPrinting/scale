@@ -32,10 +32,6 @@ def print_usage():
     print("scale file1 file2 ...")
     sys.exit()
 
-if not os.getuid() == 0:
-    print("root privilege needed...")
-    sys.exit()
-
 if len(sys.argv) == 1:
     print_usage()
 

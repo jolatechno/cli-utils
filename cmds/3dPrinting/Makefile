@@ -1,16 +1,26 @@
-MKDIR := mkdir
+MKDIR = mkdir
+CHMOD = chmod +x
+CP = cp
 
-all: create_file
-	for filename in *; do \
-		if [ ! "$$filename" -ef ./Makefile ] ; then \
-			chmod +x $$filename && \
-			cp $$filename /usr/bin/ && \
-			echo "copied $$filename to /usr/bin/$$filename"; \
-		fi \
-	done
+TARGETS = $(shell ls . -I Makefile)
 
-create_file:
+all: .$(TARGETS)
+
+.$(TARGETS): .check_auth
+	$(eval file := $(shell echo $@ | tr -d .))
+
+	${CHMOD} $(file)
+	${CP} $(file) /usr/bin/
+	@echo "copied $(file) to /usr/bin/$(file)"
+
+.create_file:
 ifeq ($(wildcard /etc/git-cli-utils/3dPrinting/params.json),)
 	${MKDIR} /etc/git-cli-utils/3dPrinting
 	@echo '{"axis": "Z", "scaling_factor": 1.0, "base_height": 0.0, "offset": 0.0}' > /etc/git-cli-utils/3dPrinting/params.json
+endif
+
+.check_auth:
+ifneq ($(shell id -u), 0)
+	@echo "root privilege needed..."
+	false
 endif

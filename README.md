@@ -88,8 +88,8 @@ Usage: "sudo smbadd -n share_name -f share_path -u share_allowed_user"
 
 `scale file1 file2 ...` will scale `file1 file2 ...` according to the parameters set by the `param` command.
 
-#### _desktop_
+### _desktop_
 
-### initall
+#### initall
 
 `sudo initall $directory1 $directory2 ...` will go through every file in each specified directory and install it if it is a `.deb` file and integrate it using [AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher) if it is a `.AppImage` or `.appimage` file.
