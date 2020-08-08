@@ -41,13 +41,13 @@ path=""
 
 while getopts 'n:f:uh' flag; do
   case "${flag}" in
+    h) print_usage;
+      exit 1;;
     n) name="${OPTARG}";;
     f) path="${OPTARG}";;
     u) user="${OPTARG}";;
-    *) print_usage
+    *) print_usage;
        exit 1 ;;
-    h) print_usage;
-      exit 1;;
   esac
 done
 

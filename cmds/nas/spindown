@@ -38,10 +38,12 @@ time=25
 
 while getopts 'tdh' flag; do
   case "${flag}" in
-    t) time="${OPTARG}";;
-    d) drive="${OPTARG}";;
     h) print_usage;
       exit 1;;
+    t) time="${OPTARG}";;
+    d) drive="${OPTARG}";;
+    *) print_usage;
+       exit 1 ;;
   esac
 done
 

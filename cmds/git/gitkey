@@ -43,15 +43,15 @@ file_name="id_rsa"
 
 while getopts 'u:e:Nfk' flag; do
   case "${flag}" in
+    h) print_usage;
+      exit 1;;
   	u) username="${OPTARG}";;
     e) email="${OPTARG}";;
     N) passphrase="${OPTARG}";;
     f) file_name="${OPTARG}" ;;
     k) key_name="${OPTARG}" ;;
-    *) print_usage
+    *) print_usage;
        exit 1 ;;
-    h) print_usage;
-      exit 1;;
   esac
 done
 

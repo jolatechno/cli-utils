@@ -22,8 +22,11 @@ $(TARGETS): .base
 	@echo "$@ " >> $(FILE)
 	cd ./cmds/$@ && $(MAKE)
 
-.base: .check_auth .create_dir .$(FILES)
+.base: .check_auth .create_dir .base_echo .$(FILES)
 	@echo "" > $(FILE)
+
+.base_echo:
+	@echo "installing base..."
 
 .$(FILES):
 	$(eval file := $(shell echo $@ | tr -d .))

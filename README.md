@@ -21,6 +21,10 @@ Use `sudo cmdsup` to update all installed commands.
 
 ### _git_
 
+#### gitcheat
+
+`gitsheat -v` will show a visual sheet-cheat about git branches and `gitsheat -t` will shot a textual sheet-cheat.
+
 #### gogit
 
 Using `gogit` in a github repository will return a version like `v0.0.0-20200611092339-bfa8c546e108` which can then be use in a `go.mod` file to import a go project.
