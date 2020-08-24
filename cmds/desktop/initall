@@ -55,7 +55,7 @@ for directory in $*; do
 			apt install -y $filename
 		fi
 
-		if [[ $filename =~ \.AppImage$ ] || [ $filename =~ \.appimage$ ]]; then
+		if [[ $filename =~ \.AppImage$ ]] || [[ $filename =~ \.appimage$ ]]; then
 			echo "integrating $filename..."
 
 			chmod +x $filename && \
