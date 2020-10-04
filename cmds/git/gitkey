@@ -25,7 +25,7 @@ SOFTWARE.
 
 print_usage() {
   printf "$License
-Usage: \"gitkey -u github_username -e github_email@mail.com -N passphrase -f key/file/name -k github_key_name\"
+Usage: \"gitkey -u github_username -e github_email@mail.com -N passphrase -f key/file/name\"
   -u github username (mendatory)
   -e github email (mendatory)
   -N ssh key passphrase
@@ -38,7 +38,6 @@ Usage: \"gitkey -u github_username -e github_email@mail.com -N passphrase -f key
 username=""
 email=""
 passphrase=Null
-key_name="curl-key"
 file_name="id_rsa"
 
 while getopts 'u:e:Nfk' flag; do
@@ -49,7 +48,6 @@ while getopts 'u:e:Nfk' flag; do
     e) email="${OPTARG}";;
     N) passphrase="${OPTARG}";;
     f) file_name="${OPTARG}" ;;
-    k) key_name="${OPTARG}" ;;
     *) print_usage;
        exit 1 ;;
   esac
@@ -68,4 +66,5 @@ fi
 
 key="$(cat $file.pub)"
 
-curl -u $username --data "{\"title\":\"$key_name\",\"key\":\"$key\"}" https://api.github.com/user/keys
+echo $key
+echo "add this key to https://github.com/settings/keys"

@@ -38,7 +38,7 @@ Using  `gitup` in a github repository is equivalent to running `git add . && git
 `gitkey` will generate an ssh key and add it to your github account with the folowing option:
 
 ```
-Usage: "gitkey -u github_username -e github_email@mail.com -N passphrase -f key/file/name -k github_key_name"
+Usage: "gitkey -u github_username -e github_email@mail.com -N passphrase -f key/file/name"
   -u github username (mendatory)
   -e github email (mendatory)
   -N ssh key passphrase
