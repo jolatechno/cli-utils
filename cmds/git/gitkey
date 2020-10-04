@@ -37,32 +37,35 @@ Usage: \"gitkey -u github_username -e github_email@mail.com -N passphrase -f key
 
 username=""
 email=""
-passphrase=Null
-file_name="id_rsa"
+passphrase='""'
+filename="github_key"
 
-while getopts 'u:e:Nfk' flag; do
+while getopts 'u:e:fN' flag; do
   case "${flag}" in
     h) print_usage;
       exit 1;;
   	u) username="${OPTARG}";;
     e) email="${OPTARG}";;
     N) passphrase="${OPTARG}";;
-    f) file_name="${OPTARG}" ;;
+    f) filename="${OPTARG}";;
     *) print_usage;
        exit 1 ;;
   esac
 done
 
-file="/home/$(whoami)/.ssh/$file_name"
+echo $filename
+echo $username
+echo $email
+
+file="/home/$(whoami)/.ssh/$filename"
 
 git config --global user.name $username
 git config --global user.email $email
 
-if [ -z "$passphrase" ]; then
-  ssh-keygen -f $file -t rsa -b 4096 -C $email
-else
-  ssh-keygen -f $file -N $passphrase -t rsa -b 4096 -C $email
-fi
+ssh-keygen -o -E md5 -f $file -N $passphrase -t rsa -C $email
+
+eval `ssh-agent -s`
+ssh-add $file
 
 key="$(cat $file.pub)"
 
