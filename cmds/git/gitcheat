@@ -39,6 +39,8 @@ print_text() {
   to create a branch use \"git branch branch_name\"
   to switch to a branch use \"git checkout branch_name\"
   to merge a branch use \"git merge branch_name\" (it will merge it with the branch you are currently on)
+  to delete a merged branch use \"git branch -d branch_name\"
+  to delete ANY branch (UNSAFE) use \"git branch -D branch_name\"
 
 push:
   to queue all file in a path for later commit use \"git add path\"
