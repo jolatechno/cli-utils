@@ -21,7 +21,7 @@ Use `sudo cmdsup` to update all installed commands.
 
 ### _git_
 
-The command `gitkey` has been removedas the old github api is now deprecated. You can use `git config --global credential.helper store` as a similar solution. 
+The command `gitkey` has been removedas the old github api is now deprecated. You can use `git config --global credential.helper store` as a similar solution.
 
 #### gitcheat
 
@@ -33,7 +33,7 @@ Using `gogit` in a github repository will return a version like `v0.0.0-20200611
 
 #### gitup
 
-Using  `gitup` in a github repository is equivalent to running `git add . && git commit -am 'update' && git push -f origin master` which make it faster option to manage simple hit project.
+Using  `gitup` in a github repository is equivalent to running `git add . && git commit -am 'update' && git push -f origin main` which make it faster option to manage simple git private project.
 
 #### gitdown
 

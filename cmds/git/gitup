@@ -42,4 +42,4 @@ done
 
 git add .
 git commit -am 'update'
-git push -f origin master
+git push -f origin main
