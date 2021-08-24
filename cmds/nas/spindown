@@ -54,7 +54,7 @@ fi
 
 param="\n
 command_line {\n
-/t    hdparm -S $time /dev/$drive\n
+       hdparm -S $time /dev/$drive\n
 }\n"
 
 echo -e $param >> /etc/hdparm.conf
