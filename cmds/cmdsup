@@ -24,23 +24,23 @@ SOFTWARE.
 "
 
 print_usage() {
-  printf "$License
+	printf "$License
 Usage: \"sudo cmdsup\"
 
-  -h help
+	-h help
 "
 }
 
 while getopts 'h' flag; do
-  case "${flag}" in
-    h) print_usage;
-      exit 1;;
-  esac
+	case "${flag}" in
+		h) print_usage;
+			exit 1;;
+	esac
 done
 
 if [ "$(id -un)" != "root" ]; then
-    echo "root privilege needed..."
-    exit 1
+		echo "root privilege needed..."
+		exit 1
 fi
 
 git clone https://github.com/jolatechno/cli-utils.git /tmp/cli-utils && echo "" && \

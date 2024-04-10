@@ -24,12 +24,12 @@ SOFTWARE.
 "
 
 print_usage() {
-  printf "$License
+	printf "$License
 Usage: \"sudo spindown -d drive_device_name -t time\"
-  -t spin down time (default is 25, see hdparm for more info)
-  -d drive name (default is \"sda\")
+	-t spin down time (default is 25, see hdparm for more info)
+	-d drive name (default is \"sda\")
 
-  -h help
+	-h help
 "
 }
 
@@ -37,24 +37,24 @@ drive="sda"
 time=25
 
 while getopts 't:d:h' flag; do
-  case "${flag}" in
-    h) print_usage;
-      exit 1;;
-    t) time="${OPTARG}";;
-    d) drive="${OPTARG}";;
-    *) print_usage;
-       exit 1 ;;
-  esac
+	case "${flag}" in
+		h) print_usage;
+			exit 1;;
+		t) time="${OPTARG}";;
+		d) drive="${OPTARG}";;
+		*) print_usage;
+			 exit 1 ;;
+	esac
 done
 
-if [ "$(id -un)" != "root" ]; then
-    echo "root privilege needed..."
-    exit 1
+if [ "$EUID" -ne 0 ]; then
+	echo "Please run as root"
+	exit
 fi
 
 param="\n
 command_line {\n
-       hdparm -S $time /dev/$drive\n
+			 hdparm -S $time /dev/$drive\n
 }\n"
 
 echo -e $param >> /etc/hdparm.conf

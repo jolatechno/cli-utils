@@ -83,8 +83,8 @@ param="
 "
 
 for line in $param; do
-  echo -e "adding \""$line"\""
-  echo -e $line >> /etc/samba/smb.conf
+	echo -e "adding \""$line"\""
+	echo -e $line >> /etc/samba/smb.conf
 done
 
 IFS=$old_IFS

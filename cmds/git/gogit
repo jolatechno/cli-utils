@@ -24,26 +24,28 @@ SOFTWARE.
 "
 
 print_usage() {
-  printf "$License
+	printf "$License
 Usage: \"gogit\"
 
-  -h help
+Gets the go version of a directory used as a go package.
+
+	-h help
 "
 }
 
 while getopts 'h' flag; do
-  case "${flag}" in
-    h) print_usage;
-      exit 1;;
-    *) print_usage;
-      exit 1 ;;
-  esac
+	case "${flag}" in
+		h) print_usage;
+			exit 1;;
+		*) print_usage;
+			exit 1 ;;
+	esac
 done
 
 hash="$(TZ=UTC git --no-pager show \
-  --quiet \
-  --abbrev=12 \
-  --date='format-local:%Y%m%d%H%M%S' \
-  --format="%cd-%h")"
+	--quiet \
+	--abbrev=12 \
+	--date='format-local:%Y%m%d%H%M%S' \
+	--format="%cd-%h")"
 
 echo "v0.0.0-$hash"

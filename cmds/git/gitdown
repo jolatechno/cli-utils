@@ -24,20 +24,22 @@ SOFTWARE.
 "
 
 print_usage() {
-  printf "$License
+		printf "$License
 Usage: \"gitdown ...\"
 
-  -h help
+clones recursively all submodules.
+
+		-h help
 "
 }
 
 while getopts 'h' flag; do
-  case "${flag}" in
-    h) print_usage;
-      exit 1;;
-    *) print_usage;
-      exit 1 ;;
-  esac
+	case "${flag}" in
+		h) print_usage;
+			exit 1;;
+		*) print_usage;
+			exit 1 ;;
+	esac
 done
 
 cpus="$(grep -c ^processor /proc/cpuinfo)"
