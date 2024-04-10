@@ -6,9 +6,10 @@ print_usage() {
     printf "code by Matt Farmer https://gist.github.com/m14t
 code at https://gist.github.com/m14t/3056747
 
-Usage: \"git-https-to-shh\":
-
 this command will set the git origin from https to ssh.
+
+Usage: \"git-https-to-shh\":
+    -h help
 "
 }
         

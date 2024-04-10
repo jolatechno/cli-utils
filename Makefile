@@ -22,18 +22,15 @@ $(TARGETS): .base
 	@echo "$@ " >> $(FILE)
 	cd ./cmds/$@ && $(MAKE)
 
-.base: .check_auth .create_dir .base_echo .$(FILES)
+.base: .check_auth .create_dir .base_echo $(FILES)
 	@echo "" > $(FILE)
 
 .base_echo:
 	@echo "installing base..."
 
-.$(FILES):
-	$(eval file := $(shell echo $@ | tr -d .))
-
-	${CHMOD} ./cmds/$(file)
-	${CP} ./cmds/$(file) /usr/bin/
-	@echo "copied $(file) to /usr/bin/$(file)"
+$(FILES):
+	@echo $@
+	cd ./cmds && bash ./install-cmds.sh $@
 
 .create_dir:
 ifeq ($(wildcard /etc/git-cli-utils/),)

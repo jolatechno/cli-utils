@@ -3,14 +3,10 @@ CP = cp
 
 TARGETS = $(shell ls . -I Makefile)
 
-all: .$(TARGETS)
+all: $(TARGETS)
 
-.$(TARGETS): .check_auth
-	$(eval file := $(shell echo $@ | tr -d .))
-
-	${CHMOD} $(file)
-	${CP} $(file) /usr/bin/
-	@echo "copied $(file) to /usr/bin/$(file)"
+$(TARGETS): .check_auth
+	bash ../install-cmds.sh $@
 
 .check_auth:
 ifneq ($(shell id -u), 0)

@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+#!/bin/bash
 
-License = '''MIT License
+License="MIT License
 
 Copyright (c) 2020 joseph touzet
 
@@ -21,43 +21,48 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"
 
-import json
-import sys
-import os
+print_usage() {
+	printf "$License
 
-def print_usage():
-    print(License)
-    print("Usage: \"sudo param axis (char, 'X', 'Y' or 'Z'), scaling_factor (float), base_height (float), offset (float)\"")
-    sys.exit()
+Installs all .deb or .AppImage the commands find.
 
-if len(sys.argv) == 1:
-    print_usage()
+Usage: \"sudo initall directory1 directory2 ...\"
+	-h help
+"
+}
 
-if sys.argv[1] == "-h":
-    print_usage()
+while getopts 'h' flag; do
+	case "${flag}" in
+		h) print_usage;
+			exit 1;;
+	esac
+done
 
-if not os.getuid() == 0:
-    print("root privilege needed...")
-    sys.exit()
+if [ "$(id -un)" != "root" ]; then
+		echo "root privilege needed..."
+		exit 1
+fi
 
-file_name = '/etc/git-cli-utils/3dPrinting/params.json'
+for directory in $*; do
+	echo "going through $directory ..."
 
-with open(file_name, 'r') as infile:
-    data = json.load(infile)
+	for filename in $directory/*; do
+		echo "found $filename"
 
-assert sys.argv[1] in ["X", "Y", "Z"], "axis not understood"
-data['axis'] = sys.argv[1]
+		if [[ $filename =~ \.deb$ ]]; then
+			echo "installing $filename..."
 
-if len(sys.argv) > 2:
-	data['scaling_factor'] = float(sys.argv[2])
+			apt install -y $filename
+		fi
 
-if len(sys.argv) > 3:
-	data['base_height'] = float(sys.argv[3])
+		if [[ $filename =~ \.AppImage$ ]] || [[ $filename =~ \.appimage$ ]]; then
+			echo "integrating $filename..."
 
-if len(sys.argv) > 4:
-	data['offset'] = float(sys.argv[4])
-
-with open(file_name, 'w') as outfile:
-    json.dump(data, outfile)
+			chmod +x $filename && \
+			ail-cli integrate $filename && \
+			cd $directory
+		fi
+	done
+done

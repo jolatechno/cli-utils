@@ -25,10 +25,10 @@ SOFTWARE.
 
 print_usage() {
 	printf "$License
-Usage: \"sudo initall directory1 directory2 ...\"
 
-install all .deb or .AppImage the commands find.
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
 
+Usage: \"sudo cmdsup\"
 	-h help
 "
 }
@@ -37,32 +37,17 @@ while getopts 'h' flag; do
 	case "${flag}" in
 		h) print_usage;
 			exit 1;;
+		*) print_usage;
+			exit 1 ;;
 	esac
 done
 
-if [ "$(id -un)" != "root" ]; then
-		echo "root privilege needed..."
-		exit 1
+if [ "$EUID" -ne 0 ]; then
+	echo "Please run as root"
+	exit
 fi
 
-for directory in $*; do
-	echo "going through $directory ..."
-
-	for filename in $directory/*; do
-		echo "found $filename"
-
-		if [[ $filename =~ \.deb$ ]]; then
-			echo "installing $filename..."
-
-			apt install -y $filename
-		fi
-
-		if [[ $filename =~ \.AppImage$ ]] || [[ $filename =~ \.appimage$ ]]; then
-			echo "integrating $filename..."
-
-			chmod +x $filename && \
-			ail-cli integrate $filename && \
-			cd $directory
-		fi
-	done
-done
+git clone https://github.com/jolatechno/cli-utils.git /tmp/cli-utils && echo "" && \
+((cd /tmp/cli-utils && \
+make update ); \
+rm -r /tmp/cli-utils )

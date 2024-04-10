@@ -25,8 +25,10 @@ SOFTWARE.
 
 print_usage() {
 	printf "$License
-Usage: \"sudo cmdsup\"
 
+Gets the go version of a directory used as a go package.
+
+Usage: \"gogit\"
 	-h help
 "
 }
@@ -35,15 +37,15 @@ while getopts 'h' flag; do
 	case "${flag}" in
 		h) print_usage;
 			exit 1;;
+		*) print_usage;
+			exit 1 ;;
 	esac
 done
 
-if [ "$(id -un)" != "root" ]; then
-		echo "root privilege needed..."
-		exit 1
-fi
+hash="$(TZ=UTC git --no-pager show \
+	--quiet \
+	--abbrev=12 \
+	--date='format-local:%Y%m%d%H%M%S' \
+	--format="%cd-%h")"
 
-git clone https://github.com/jolatechno/cli-utils.git /tmp/cli-utils && echo "" && \
-((cd /tmp/cli-utils && \
-make update ); \
-rm -r /tmp/cli-utils )
+echo "v0.0.0-$hash"

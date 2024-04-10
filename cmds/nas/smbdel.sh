@@ -24,12 +24,9 @@ SOFTWARE.
 "
 
 print_usage() {
-		printf "$License
-Usage: \"gitdown ...\"
-
-clones recursively all submodules.
-
-		-h help
+	printf "$License
+Usage: \"sudo smbdel share_name1 share_name2 ...\"
+	-h help
 "
 }
 
@@ -42,6 +39,38 @@ while getopts 'h' flag; do
 	esac
 done
 
-cpus="$(grep -c ^processor /proc/cpuinfo)"
+if [ "$(id -un)" != "root" ]; then
+		echo "root privilege needed..."
+		exit 1
+fi
 
-git clone --recurse-submodules -j$cpus $*
+old_IFS=$IFS; IFS=$'\n'
+
+for name in $*; do
+	del=0
+	file=$(cat /etc/samba/smb.conf)
+
+	echo "" > /etc/samba/smb.conf
+
+	for line in $file; do
+		if [[ $del == 1 ]]; then
+			if [[ $line = '   '* ]]; then
+				echo "deleting \"$line\""
+			else
+				del=0
+				echo $line >> /etc/samba/smb.conf
+			fi
+		else
+			if [ $line == "[$name]" ]; then
+				echo "deleting \"$line\""
+				del=1
+			else
+				echo $line >> /etc/samba/smb.conf
+			fi
+		fi
+	done
+done
+
+IFS=$old_IFS
+
+service smbd restart

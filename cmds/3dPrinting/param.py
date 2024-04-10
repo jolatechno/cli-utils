@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env python3
 
-License="MIT License
+License = '''MIT License
 
 Copyright (c) 2020 joseph touzet
 
@@ -21,31 +21,43 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-"
+'''
 
-print_usage() {
-	printf "$License
-Usage: \"gogit\"
+import json
+import sys
+import os
 
-Gets the go version of a directory used as a go package.
+def print_usage():
+    print(License)
+    print("Usage: \"sudo param axis (char, 'X', 'Y' or 'Z'), scaling_factor (float), base_height (float), offset (float)\"\n\t-h help")
+    sys.exit()
 
-	-h help
-"
-}
+if len(sys.argv) == 1:
+    print_usage()
 
-while getopts 'h' flag; do
-	case "${flag}" in
-		h) print_usage;
-			exit 1;;
-		*) print_usage;
-			exit 1 ;;
-	esac
-done
+if sys.argv[1] == "-h":
+    print_usage()
 
-hash="$(TZ=UTC git --no-pager show \
-	--quiet \
-	--abbrev=12 \
-	--date='format-local:%Y%m%d%H%M%S' \
-	--format="%cd-%h")"
+if not os.getuid() == 0:
+    print("root privilege needed...")
+    sys.exit()
 
-echo "v0.0.0-$hash"
+file_name = '/etc/git-cli-utils/3dPrinting/params.json'
+
+with open(file_name, 'r') as infile:
+    data = json.load(infile)
+
+assert sys.argv[1] in ["X", "Y", "Z"], "axis not understood"
+data['axis'] = sys.argv[1]
+
+if len(sys.argv) > 2:
+	data['scaling_factor'] = float(sys.argv[2])
+
+if len(sys.argv) > 3:
+	data['base_height'] = float(sys.argv[3])
+
+if len(sys.argv) > 4:
+	data['offset'] = float(sys.argv[4])
+
+with open(file_name, 'w') as outfile:
+    json.dump(data, outfile)

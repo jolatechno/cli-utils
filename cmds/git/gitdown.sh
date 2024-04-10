@@ -24,24 +24,24 @@ SOFTWARE.
 "
 
 print_usage() {
-	printf "$License
-Usage: \"gitup\"
+		printf "$License
 
-equivalent to \"git add . ; git commit -am 'update' ; git push -f origin main\"
+Clones recursively all submodules.
 
+Usage: \"gitdown ...\"
 	-h help
 "
 }
 
 while getopts 'h' flag; do
 	case "${flag}" in
-	h) print_usage;
-		exit 1;;
-	*) print_usage;
-		exit 1 ;;
+		h) print_usage;
+			exit 1;;
+		*) print_usage;
+			exit 1 ;;
 	esac
 done
 
-git add .
-git commit -am 'update'
-git push -f origin main
+cpus="$(grep -c ^processor /proc/cpuinfo)"
+
+git clone --recurse-submodules -j$cpus $*
