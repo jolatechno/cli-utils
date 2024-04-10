@@ -7,7 +7,7 @@ TARGETS = $(shell ls . -I Makefile)
 all: $(TARGETS)
 
 $(TARGETS): .check_auth
-	bash ../install-cmds.sh $@
+	bash ../install-cmd.sh $@
 
 .create_file:
 ifeq ($(wildcard /etc/git-cli-utils/3dPrinting/params.json),)

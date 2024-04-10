@@ -28,7 +28,7 @@ print_usage() {
 
 installs all commands as exectuables to /bin/ and removes the extension.
 
-Usage: \"sudo install-cmds cmd1.sh cmd2.py ...\"
+Usage: \"sudo install-cmd cmd1.sh cmd2.py ...\"
 	-h help
 "
 }
@@ -50,7 +50,7 @@ fi
 
 for file in $@; do
 	cmdname=$(basename "${file%.*}")
-	echo "cp $file /bin/$cmdname"
-	cp $file /bin/$cmdname
-	chmod +x /bin/$cmdname
+	echo "cp $file /usr/bin/$cmdname"
+	cp $file /usr/bin/$cmdname
+	chmod +x /usr/bin/$cmdname
 done

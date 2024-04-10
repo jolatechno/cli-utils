@@ -6,7 +6,7 @@ TARGETS = $(shell ls . -I Makefile)
 all: $(TARGETS)
 
 $(TARGETS): .check_auth
-	bash ../install-cmds.sh $@
+	bash ../install-cmd.sh $@
 
 .check_auth:
 ifneq ($(shell id -u), 0)
