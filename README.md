@@ -1,6 +1,8 @@
 # cli-utils
 additional command to make using the git cli with github easier. Also help with golang developement
 
+__*Some commands still need to be documented*__
+
 ## Installation
 
 use `sudo make target1 target2 ...` to init all the commands.
@@ -80,7 +82,7 @@ Usage: "sudo smbadd -n share_name -f share_path -u share_allowed_user"
 
 `scale file1 file2 ...` will scale `file1 file2 ...` according to the parameters set by the `param` command.
 
-### _desktop_
+### _debian_
 
 #### initall
 

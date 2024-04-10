@@ -24,69 +24,27 @@ SOFTWARE.
 "
 
 print_usage() {
-  printf "$License
-Usage: \"sudo smbadd -n share_name -f share_path -u share_allowed_user\"
-	-n share name (mendatory)
-	-f share path (mendatory)
-	-u allowed user (if not specified will be $(whoami))
+    printf "$License
 
-	-h help
+Usage: \"convert-all-raw\"
+    -h help
 "
 }
 
-user="$(whoami)"
-name=""
-path=""
-
-
-while getopts 'n:f:uh' flag; do
-  case "${flag}" in
+while getopts 'h' flag; do
+    case "${flag}" in
     h) print_usage;
-      exit 1;;
-    n) name="${OPTARG}";;
-    f) path="${OPTARG}";;
-    u) user="${OPTARG}";;
+        exit 1;;
     *) print_usage;
-       exit 1 ;;
-  esac
+        exit 1 ;;
+    esac
 done
 
-if [ "$(id -un)" != "root" ]; then
-    echo "root privilege needed..."
-    exit 1
-fi
 
-old_IFS=$IFS; IFS=$'\n'
-
-param="
-\0
-[$name]
-   path = $path
-   read only = no
-   browseable = yes
-   hide dot files = yes
-   guest ok = no
-   valid user = $user
-   public = no
-   create mode = 0777
-   directory mode = 0777
-   read raw = yes
-   write raw = yes
-   socket option = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=131072 SO_SNDBUF=131072
-   min receivefile size = 16384
-   use sendfile = true
-   aio read size = 16384
-   aio write size = 16384
-   getwd cache = true
-   write cache size = 2097152
-\0
-"
-
-for line in $param; do
-	echo -e "adding \""$line"\""
-	echo -e $line >> /etc/samba/smb.conf
+for file in *.MTS; do
+	outfile=converted_$(basename "${file%.*}").mp4
+    if [ ! -f "$outfile" ]; then
+		echo "exporting $file -> $outfile"
+		ffmpeg -i $file -c:v copy -c:a aac -strict experimental -b:a 128k $outfile
+    fi
 done
-
-IFS=$old_IFS
-
-service smbd restart
