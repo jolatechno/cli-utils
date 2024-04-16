@@ -41,6 +41,8 @@ while getopts 'h' flag; do
 done
 
 
+OIFS="$IFS"
+IFS=$'\n'
 for file in `find "." -maxdepth 1 -type f -name "*.pdf"; find "." -maxdepth 1 -type f -name "*.PDF"` $(ls *.pdf *.PDF); do
     outfile=compressed_${file}
     if [ ! -f "$outfile" ]; then
@@ -48,3 +50,4 @@ for file in `find "." -maxdepth 1 -type f -name "*.pdf"; find "." -maxdepth 1 -t
         ps2pdf -dPDFSETTINGS=/ebook $file $outfile
     fi
 done
+IFS=$OIFS

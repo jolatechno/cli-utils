@@ -41,6 +41,8 @@ while getopts 'h' flag; do
 done
 
 
+OIFS="$IFS"
+IFS=$'\n'
 for file in `find "." -maxdepth 1 -type f -name "*.jpg"; find "." -maxdepth 1 -type f -name "*.JPG"; find "." -maxdepth 1 -type f -name "*.JPEG"` do
     outfile=compressed_${file}
     if [ ! -f "$outfile" ]; then
@@ -48,3 +50,4 @@ for file in `find "." -maxdepth 1 -type f -name "*.jpg"; find "." -maxdepth 1 -t
         ffmpeg -i $file -q:v 10 $outfile
     fi
 done
+IFS=$OIFS

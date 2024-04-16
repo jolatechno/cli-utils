@@ -41,6 +41,8 @@ while getopts 'h' flag; do
 done
 
 
+OIFS="$IFS"
+IFS=$'\n'
 for file in `find "." -maxdepth 1 -type f -name "*.MTS"`; do
 	outfile=converted_$(basename "${file%.*}").mp4
     if [ ! -f "$outfile" ]; then
@@ -48,3 +50,4 @@ for file in `find "." -maxdepth 1 -type f -name "*.MTS"`; do
 		ffmpeg -i $file -c:v copy -c:a aac -strict experimental -b:a 128k $outfile
     fi
 done
+IFS=$OIFS

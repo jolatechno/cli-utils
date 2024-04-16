@@ -41,6 +41,8 @@ while getopts 'h' flag; do
 done
 
 
+OIFS="$IFS"
+IFS=$'\n'
 for file in `find "." -maxdepth 1 -type f -name "*.ARW"`; do
 	outfile=converted_$(basename "${file%.*}").jpg
     if [ ! -f "$outfile" ]; then
@@ -48,3 +50,4 @@ for file in `find "." -maxdepth 1 -type f -name "*.ARW"`; do
 		convert -quality 96 $file $outfile
     fi
 done
+IFS=$OIFS

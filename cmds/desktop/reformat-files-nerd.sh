@@ -45,9 +45,6 @@ read -p "Are you sure you want to continue? [Y|n] " prompt
 
 recursion()
 {
-	OIFS="$IFS"
-	IFS=$'\n'
-
     for file in `find "." -maxdepth 1`; do
     	if [ "$file" == "." ]; then
     		continue
@@ -76,12 +73,13 @@ recursion()
 			cd ../
 		fi
 	done
-
-	IFS=$OIFS
 }
 
 if [[ $prompt == "Y" ]]; then
+	OIFS="$IFS"
+	IFS=$'\n'
 	recursion
+	IFS=$OIFS
 else
 	exit 0
 fi
