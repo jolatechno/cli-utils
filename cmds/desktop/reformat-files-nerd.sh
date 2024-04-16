@@ -45,7 +45,14 @@ read -p "Are you sure you want to continue? [Y|n] " prompt
 
 recursion()
 {
-    for file in $(ls "$1/"); do
+	OIFS="$IFS"
+	IFS=$'\n'
+
+    for file in `find "." -maxdepth 1`; do
+    	if [ "$file" == "." ]; then
+    		continue
+    	fi
+
 		outfile="$(echo $file | tr " " "_")"
 		while true; do
 			in_size=${#outfile}
@@ -59,18 +66,22 @@ recursion()
 		outfile="$(echo $outfile | iconv -f utf8 -t ascii//TRANSLIT)"
 
 		if [ "$file" != "$outfile" ]; then
-			mv "$1/$file" "$1/$outfile"
-			echo "mv $1/$file $1/$outfile"
+			mv "$file" "$outfile"
+			echo "mv $file $outfile"
 		fi
 
 		if [[ -d $outfile ]]; then
-			recursion "$1/$outfile"
+			cd $outfile
+			recursion
+			cd ../
 		fi
 	done
+
+	IFS=$OIFS
 }
 
 if [[ $prompt == "Y" ]]; then
-	recursion "."
+	recursion
 else
 	exit 0
 fi

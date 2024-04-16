@@ -41,7 +41,7 @@ while getopts 'h' flag; do
 done
 
 
-for file in *.ARW; do
+for file in `find "." -maxdepth 1 -type f -name "*.ARW"`; do
 	outfile=converted_$(basename "${file%.*}").jpg
     if [ ! -f "$outfile" ]; then
 		echo "exporting $file -> $outfile"

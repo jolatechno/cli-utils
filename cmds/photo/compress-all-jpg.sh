@@ -41,7 +41,7 @@ while getopts 'h' flag; do
 done
 
 
-for file in $(ls *.jpg *.JPG *.JPEG); do
+for file in `find "." -maxdepth 1 -type f -name "*.jpg"; find "." -maxdepth 1 -type f -name "*.JPG"; find "." -maxdepth 1 -type f -name "*.JPEG"` do
     outfile=compressed_${file}
     if [ ! -f "$outfile" ]; then
         echo "compressing $file -> $outfile"

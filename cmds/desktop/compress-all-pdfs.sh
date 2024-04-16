@@ -41,7 +41,7 @@ while getopts 'h' flag; do
 done
 
 
-for file in $(ls *.pdf *.PDF); do
+for file in `find "." -maxdepth 1 -type f -name "*.pdf"; find "." -maxdepth 1 -type f -name "*.PDF"` $(ls *.pdf *.PDF); do
     outfile=compressed_${file}
     if [ ! -f "$outfile" ]; then
         echo "compressing $file -> $outfile"

@@ -41,7 +41,7 @@ while getopts 'h' flag; do
 done
 
 
-for file in *.MTS; do
+for file in `find "." -maxdepth 1 -type f -name "*.MTS"`; do
 	outfile=converted_$(basename "${file%.*}").mp4
     if [ ! -f "$outfile" ]; then
 		echo "exporting $file -> $outfile"
