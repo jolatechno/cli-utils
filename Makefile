@@ -18,7 +18,7 @@ all: $(TARGETS)
 update: $(INSTALLED)
 
 $(TARGETS): .base
-	@echo "\ninstalling $@..."
+	@echo -e "\n\ninstalling $@...\n"
 	@echo "$@ " >> $(FILE)
 	cd ./cmds/$@ && $(MAKE)
 
