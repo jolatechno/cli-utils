@@ -28,11 +28,14 @@ print_usage() {
 
 Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
 
+Automatically unlocks and copies all of the data of a swissbit archive sd card to a single forlder.
+
+
 Usage: \"iAT-download-merge-all -m /dev/sdxx -o ~/Download/sync\"
 	-h help
 
 	-m (required): device mount point (like /dev/sdxx)
-	-o (required): output 
+	-o (required): output folder for merged data
 "
 }
 
@@ -46,7 +49,7 @@ while getopts 'm:o:h' flag; do
     	m) mount_point="${OPTARG}";;
 	    o) output_folder="${OPTARG}";;
 		*) print_usage;
-			exit 1 ;;
+			exit 1;;
 	esac
 done
 
@@ -70,7 +73,7 @@ if [ ! -z "${PIN}" ]; then
 	iATcli ${mount_point} login --pin ${PIN}
 fi
 
-sessions=$(iATcli /dev/sdb1 listSessions | tail -n +2 | awk '{print $1;}' | paste -sd " " -)
+sessions=$(iATcli ${mount_point} listSessions | tail -n +2 | awk '{print $1;}' | paste -sd " " -)
 
 mount_folder=$(grep ${mount_point} /etc/mtab | awk '{print $2;}')
 for session in $(echo "${sessions}"); do
