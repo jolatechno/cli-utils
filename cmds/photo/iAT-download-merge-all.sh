@@ -66,7 +66,7 @@ elif [ ! -d ${output_folder} ]; then
 	mkdir -p ${output_folder};
 fi
 
-read -p 'Unlock pin (empty if card is unlocked: ' -s PIN
+read -p 'Unlock pin (empty if card is unlocked): ' -s PIN
 if [ ! -z "${PIN}" ]; then
 	echo "Unlocking card..."
 

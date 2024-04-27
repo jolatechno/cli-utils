@@ -56,11 +56,9 @@ if [ -z "${mount_point}" ]; then
 	exit 1
 fi
 
-read -p 'Unlock pin (empty if card is unlocked: ' -s PIN
+read -p 'Unlock pin (empty if card is unlocked): ' -s PIN
 if [ ! -z "${PIN}" ]; then
-	echo "Unlocking card..."
-
-	iATcli ${mount_point} login --pin ${PIN}
+	iATcli ${mount_point} wipeContent --pin ${PIN}
+else
+	iATcli ${mount_point} wipeContent
 fi
-
-iATcli ${mount_point} wipeContent
