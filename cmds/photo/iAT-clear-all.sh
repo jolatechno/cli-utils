@@ -51,7 +51,7 @@ while getopts 'm:h' flag; do
 	esac
 done
 
-if [ -z "${output_folder}" ]; then
+if [ -z "${mount_point}" ]; then
 	echo 'Missing mount point (-m)' >&2
 	exit 1
 fi
