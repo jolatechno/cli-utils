@@ -43,7 +43,7 @@ done
 
 OIFS="$IFS"
 IFS=$'\n'
-for file in `find "." -maxdepth 1 -type f -name "*.ARW"`; do
+for file in `find "." -maxdepth 1 -type f -name "*.ARW"; find "." -maxdepth 1 -type f -name "*.CR2"; find "." -maxdepth 1 -type f -name "*.tiff"; find "." -maxdepth 1 -type f -name "*.tif"; find "." -maxdepth 1 -type f -name "*.DNG"; find "." -maxdepth 1 -type f -name "*.NEF"`; do
 	outfile=converted_$(basename "${file%.*}").jpg
     if [ ! -f "$outfile" ]; then
 		echo "exporting $file -> $outfile"

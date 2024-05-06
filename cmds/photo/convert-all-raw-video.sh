@@ -43,7 +43,7 @@ done
 
 OIFS="$IFS"
 IFS=$'\n'
-for file in `find "." -maxdepth 1 -type f -name "*.MTS"`; do
+for file in `find "." -maxdepth 1 -type f -name "*.MTS"; find "." -maxdepth 1 -type f -name "*.CRW"`; do
 	outfile=converted_$(basename "${file%.*}").mp4
     if [ ! -f "$outfile" ]; then
 		echo "exporting $file -> $outfile"
