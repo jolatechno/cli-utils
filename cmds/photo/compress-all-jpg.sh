@@ -40,14 +40,24 @@ while getopts 'h' flag; do
     esac
 done
 
+find_all() {
+    first=1
+    for ext in "$@"; do
+        if [[ $first == 1 ]]; then
+            find_filter=(-iname "*.$ext")
+            first=0
+        else
+            find_filter+=( -o -iname "*.$ext")
+        fi
+    done
 
-OIFS="$IFS"
-IFS=$'\n'
-for file in `find "." -maxdepth 1 -type f -name "*.jpg"; find "." -maxdepth 1 -type f -name "*.JPG"; find "." -maxdepth 1 -type f -name "*.JPEG"` do
+    echo "$(find . -type f \( "${find_filter[@]}" \) | cut -b 3-)"
+}
+
+for file in $(find_all "jpg" "jpeg"); do
     outfile=compressed_${file}
     if [ ! -f "$outfile" ]; then
         echo "compressing $file -> $outfile"
         ffmpeg -i $file -q:v 10 $outfile
     fi
 done
-IFS=$OIFS

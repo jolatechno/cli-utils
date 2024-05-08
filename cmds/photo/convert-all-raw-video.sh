@@ -40,14 +40,24 @@ while getopts 'h' flag; do
     esac
 done
 
+find_all() {
+    first=1
+    for ext in "$@"; do
+        if [[ $first == 1 ]]; then
+            find_filter=(-iname "*.$ext")
+            first=0
+        else
+            find_filter+=( -o -iname "*.$ext")
+        fi
+    done
 
-OIFS="$IFS"
-IFS=$'\n'
-for file in `find "." -maxdepth 1 -type f -name "*.MTS"; find "." -maxdepth 1 -type f -name "*.CRW"`; do
+    echo "$(find . -type f \( "${find_filter[@]}" \) | cut -b 3-)"
+}
+
+for file in $(find_all "MTS" "CRW"); do
 	outfile=converted_$(basename "${file%.*}").mp4
     if [ ! -f "$outfile" ]; then
 		echo "exporting $file -> $outfile"
 		ffmpeg -i $file -c:v copy -c:a aac -strict experimental -b:a 128k $outfile
     fi
 done
-IFS=$OIFS

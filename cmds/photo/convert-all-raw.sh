@@ -41,13 +41,24 @@ while getopts 'h' flag; do
 done
 
 
-OIFS="$IFS"
-IFS=$'\n'
-for file in `find "." -maxdepth 1 -type f -name "*.ARW"; find "." -maxdepth 1 -type f -name "*.CR2"; find "." -maxdepth 1 -type f -name "*.tiff"; find "." -maxdepth 1 -type f -name "*.tif"; find "." -maxdepth 1 -type f -name "*.DNG"; find "." -maxdepth 1 -type f -name "*.NEF"`; do
+find_all() {
+    first=1
+    for ext in "$@"; do
+        if [[ $first == 1 ]]; then
+            find_filter=(-iname "*.$ext")
+            first=0
+        else
+            find_filter+=( -o -iname "*.$ext")
+        fi
+    done
+
+    echo "$(find . -type f \( "${find_filter[@]}" \) | cut -b 3-)"
+}
+
+for file in $(find_all "ARW" "CR2" "tiff" "tif" "DNG" "NEF"); do
 	outfile=converted_$(basename "${file%.*}").jpg
     if [ ! -f "$outfile" ]; then
 		echo "exporting $file -> $outfile"
 		convert -quality 96 $file $outfile
     fi
 done
-IFS=$OIFS
