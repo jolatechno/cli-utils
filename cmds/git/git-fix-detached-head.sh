@@ -40,6 +40,21 @@ while getopts 'h' flag; do
 	esac
 done
 
+if ! command -v git &> /dev/null; then
+    read -p "git not found, install ? [Y|n] " prompt
+    if [[ $prompt == "Y" ]]; then
+        if command -v pacman &> /dev/null; then
+            pacman -Sy git
+        elif command -v apt-get &> /dev/null; then
+            apt-get install git
+        else
+            echo "Installing command not found, try to install yourself."
+            exit 1
+        fi
+    else
+        exit 0
+    fi
+fi
 
 if [[ $prompt == "Y" ]]; then
 	git switch -c temp_branch && \

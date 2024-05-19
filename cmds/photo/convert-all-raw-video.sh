@@ -54,6 +54,22 @@ find_all() {
     echo "$(find . -type f \( "${find_filter[@]}" \) | cut -b 3-)"
 }
 
+if ! command -v ffmpeg &> /dev/null; then
+    read -p "ffmpeg not found, install ? [Y|n] " prompt
+    if [[ $prompt == "Y" ]]; then
+        if command -v pacman &> /dev/null; then
+            sudo pacman -Sy ffmpeg
+        elif command -v apt-get &> /dev/null; then
+            sudo apt-get install ffmpeg
+        else
+            echo "Installing command not found, try to install yourself."
+            exit 1
+        fi
+    else
+        exit 0
+    fi
+fi
+
 for file in $(find_all "MTS" "CRW"); do
 	outfile=converted_$(basename "${file%.*}").mp4
     if [ ! -f "$outfile" ]; then

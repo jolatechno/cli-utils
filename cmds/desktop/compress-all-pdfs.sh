@@ -54,6 +54,22 @@ find_all() {
     echo "$(find . -type f \( "${find_filter[@]}" \) | cut -b 3-)"
 }
 
+if ! command -v ps2pdf &> /dev/null; then
+    read -p "ps2pdf not found, install ? [Y|n] " prompt
+    if [[ $prompt == "Y" ]]; then
+        if command -v pacman &> /dev/null; then
+            sudo pacman -Sy ghostscript
+        elif command -v apt-get &> /dev/null; then
+            sudo apt-get install ghostscript
+        else
+            echo "Installing command not found, try to install yourself."
+            exit 1
+        fi
+    else
+        exit 0
+    fi
+fi
+
 for file in $(find_all "pdf"); do
     outfile=compressed_${file}
     if [ ! -f "$outfile" ]; then
