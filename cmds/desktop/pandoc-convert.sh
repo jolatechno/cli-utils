@@ -97,8 +97,7 @@ for file in $@; do
 		for output in $outputs; do
 			output_file_name="${base_file_name}.${output}"
 
-			echo "\"${file}\" -> ${output_file_name}"
-			#pandoc $file -o $output_file_name
+			pandoc $file -o $output_file_name
 		done
 	fi
 done

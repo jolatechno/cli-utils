@@ -28,18 +28,22 @@ print_usage() {
 
 Usage: \"convert-all-raw\"
     -h help
+
+    -r recursive
 "
 }
 
-while getopts 'h' flag; do
+recursive=false
+
+while getopts 'hr' flag; do
     case "${flag}" in
     h) print_usage;
         exit 1;;
+    r) recursive=true;;
     *) print_usage;
         exit 1 ;;
     esac
 done
-
 
 find_all() {
     first=1
@@ -52,7 +56,12 @@ find_all() {
         fi
     done
 
-    echo "$(find . -type f \( "${find_filter[@]}" \) | cut -b 3-)"
+    additional_flag=""
+    if [ $recursive == false ] ; then
+        additional_flag+="-maxdepth 1"
+    fi
+
+    echo "$(find . ${additional_flag} -type f \( "${find_filter[@]}" \) | cut -b 3-)"
 }
 
 if ! command -v ffmpeg &> /dev/null; then
@@ -71,10 +80,14 @@ if ! command -v ffmpeg &> /dev/null; then
     fi
 fi
 
-for file in $(find_all "ARW" "CR2" "tiff" "tif" "DNG" "NEF"); do
+all=$(find_all "ARW" "CR2" "tiff" "tif" "DNG" "NEF")
+OIFS="$IFS"
+IFS=$'\n'
+for file in $all; do
 	outfile=converted_$(basename "${file%.*}").jpg
     if [ ! -f "$outfile" ]; then
 		echo "exporting $file -> $outfile"
 		convert -quality 96 $file $outfile
     fi
 done
+IFS=$OIFS

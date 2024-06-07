@@ -31,10 +31,13 @@ Usage: \"reformat-files-nerd\"
 "
 }
 
-while getopts 'h' flag; do
+recursive=false
+
+while getopts 'hr' flag; do
 	case "${flag}" in
 		h) print_usage;
 			exit 1;;
+    	r) recursive=true;;
 		*) print_usage;
 			exit 1 ;;
 	esac
@@ -67,7 +70,7 @@ recursion()
 			echo "mv $file $outfile"
 		fi
 
-		if [[ -d $outfile ]]; then
+		if [[ -d $outfile ]] && [ $recursive == true ]; then
 			cd $outfile
 			recursion
 			cd ../

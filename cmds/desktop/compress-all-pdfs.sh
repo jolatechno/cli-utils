@@ -28,13 +28,18 @@ print_usage() {
 
 Usage: \"compress-all-pdfs\"
 	-h help
+
+    -r recursive
 "
 }
 
-while getopts 'h' flag; do
+recursive=false
+
+while getopts 'hr' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
+    r) recursive=true;;
 	*) print_usage;
 		exit 1 ;;
 	esac
@@ -51,7 +56,12 @@ find_all() {
         fi
     done
 
-    echo "$(find . -type f \( "${find_filter[@]}" \) | cut -b 3-)"
+    additional_flag=""
+    if [ $recursive == false ] ; then
+        additional_flag+="-maxdepth 1"
+    fi
+
+    echo "$(find . ${additional_flag} -type f \( "${find_filter[@]}" \) | cut -b 3-)"
 }
 
 if ! command -v ps2pdf &> /dev/null; then
@@ -70,10 +80,14 @@ if ! command -v ps2pdf &> /dev/null; then
     fi
 fi
 
-for file in $(find_all "pdf"); do
+all=$(find_all "pdf")
+OIFS="$IFS"
+IFS=$'\n'
+for file in $all; do
     outfile=compressed_${file}
     if [ ! -f "$outfile" ]; then
-        echo "compressing $file -> $outfile"
-        ps2pdf -dPDFSETTINGS=/ebook $file $outfile
+        echo "compressing \"${file}\" -> \"${outfile}\""
+        ps2pdf -dPDFSETTINGS=/ebook "${file}" "${outfile}"
     fi
 done
+IFS=$OIFS
