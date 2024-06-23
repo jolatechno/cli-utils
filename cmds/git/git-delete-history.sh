@@ -35,16 +35,6 @@ Usage: \"git-delete-history\"
 "
 }
 
-while getopts 'hb:' flag; do
-	case "${flag}" in
-	h) print_usage;
-		exit 1;;
-    b) branch="${OPTARG}";;
-	*) print_usage;
-		exit 1 ;;
-	esac
-done
-
 if ! command -v git &> /dev/null; then
     read -p "git not found, install ? [Y|n] " prompt
     if [[ $prompt == "Y" ]]; then
@@ -60,6 +50,19 @@ if ! command -v git &> /dev/null; then
         exit 0
     fi
 fi
+
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+while getopts 'hb:' flag; do
+	case "${flag}" in
+	h) print_usage;
+		exit 1;;
+    b) branch="${OPTARG}";;
+	*) print_usage;
+		exit 1 ;;
+	esac
+done
 
 read -p "Are you sure you want to continue? [Y|n] " prompt
 if [[ $prompt == "Y" ]]; then
