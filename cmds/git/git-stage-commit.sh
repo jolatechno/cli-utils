@@ -138,6 +138,10 @@ else
 	if ! [ "${added_file_size}" == 0 ]; then
 		echo -e "\ncommited $(( ${added_file_size}/1000 ))M to '${commit_name}_${idx}'\n"
 		git commit -am "${commit_name}_${idx}"
+		if [ "${push_each}" = true ]; then
+			echo -e "\nPushing directly...\n"
+			git push -f origin ${branch}
+		fi
 	fi
 
 	if ! [ "${push_each}" = true ]; then
