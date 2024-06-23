@@ -33,7 +33,8 @@ It is usefull for \"git-remote-gcrypt\" so that the encrypted commit doesn't exc
 Usage: \"git-stage-commit\"
 	-h help
 
-	-s max added file size [Mb], default is 25Mb (half of Github recommandation of 50Mb)
+	-s max added file size [Mb], default is 25Mb (half of Github recommandation of 50Mb).
+		If negative, will fallback to gitup.
     -m commit name, default is 'update'
     -I ignore first commit (that tracks changes to existing files)
     -b set branch name, default is whatever beanch you are on
@@ -77,64 +78,69 @@ while getopts 'hm:Is:b:p' flag; do
 	esac
 done
 
-if [ "${first_commit}" = true ]; then
-	echo -e "commiting changes to existing file to '${commit_name}_change'\n"
-	git commit -am "${commit_name}_change"
-	if [ "${push_each}" = true ]; then
-		echo -e "Pushing directly...\n"
-		git push -f origin ${branch}
-	fi
-fi
+if (( $max_file_size < 0 || $max_file_size = 0 )); then
+	gitup -m "${commit_name}" -b "${branch}"
+else
 
-
-idx=0
-added_file_size=0
-to_add=$(git ls-files --others --exclude-standard)
-
-echo -e "\nWill add: ${to_add}\n"
-
-
-OIFS="$IFS"
-IFS=$'\n'
-for file in $to_add; do
-	this_file_size=$(du -sh --block-size=M ${file} | awk -F"M" '{print $1}')
-	if (( $added_file_size + $this_file_size > $max_file_size )); then
-		if [ "$added_file_size" = 0 ]; then
-			echo -e "\t- adding ${file} to '${commit_name}_${idx}'"
-			git add "${file}"
-		fi
-
-		echo -e "\ncommited ${added_file_size}M to '${commit_name}_${idx}'\n"
-		git commit -am "${commit_name}_${idx}"
+	if [ "${first_commit}" = true ]; then
+		echo -e "commiting changes to existing file to '${commit_name}_change'\n"
+		git commit -am "${commit_name}_change"
 		if [ "${push_each}" = true ]; then
 			echo -e "Pushing directly...\n"
 			git push -f origin ${branch}
 		fi
-		idx=$(($idx + 1))
+	fi
 
-		if ! [ "$added_file_size" == 0 ]; then
-			echo "\t - adding ${file} to '${commit_name}_${idx}'"
+
+	idx=0
+	added_file_size=0
+	to_add=$(git ls-files --others --exclude-standard)
+
+	echo -e "\nWill add: ${to_add}\n"
+
+
+	OIFS="$IFS"
+	IFS=$'\n'
+	for file in $to_add; do
+		this_file_size=$(du -sh --block-size=M ${file} | awk -F"M" '{print $1}')
+		if (( $added_file_size + $this_file_size > $max_file_size )); then
+			if [ "$added_file_size" = 0 ]; then
+				echo -e "\t- adding ${file} to '${commit_name}_${idx}'"
+				git add "${file}"
+			fi
+
+			echo -e "\ncommited ${added_file_size}M to '${commit_name}_${idx}'\n"
+			git commit -am "${commit_name}_${idx}"
+			if [ "${push_each}" = true ]; then
+				echo -e "Pushing directly...\n"
+				git push -f origin ${branch}
+			fi
+			idx=$(($idx + 1))
+
+			if ! [ "$added_file_size" == 0 ]; then
+				echo "\t - adding ${file} to '${commit_name}_${idx}'"
+				git add "${file}"
+
+				added_file_size=$this_file_size
+			else
+				added_file_size=0
+			fi
+		else
+			echo -e "\t- adding ${file} to '${commit_name}_${idx}'"
 			git add "${file}"
 
-			added_file_size=$this_file_size
-		else
-			added_file_size=0
+			added_file_size=$(($added_file_size + $this_file_size))
 		fi
-	else
-		echo -e "\t- adding ${file} to '${commit_name}_${idx}'"
-		git add "${file}"
+	done
+	IFS=$OIFS
 
-		added_file_size=$(($added_file_size + $this_file_size))
+	if ! [ "$added_file_size" == 0 ]; then
+		echo -e "\ncommited ${added_file_size}M to '${commit_name}_${idx}'\n"
+		git commit -am "${commit_name}_${idx}"
 	fi
-done
-IFS=$OIFS
 
-if ! [ "$added_file_size" == 0 ]; then
-	echo -e "\ncommited ${added_file_size}M to '${commit_name}_${idx}'\n"
-	git commit -am "${commit_name}_${idx}"
-fi
-
-if ! [ "${push_each}" = true ]; then
-	echo -e "Pushing at the end...\n"
-	git push -f origin ${branch}
+	if ! [ "${push_each}" = true ]; then
+		echo -e "Pushing at the end...\n"
+		git push -f origin ${branch}
+	fi
 fi
