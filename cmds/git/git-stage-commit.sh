@@ -79,6 +79,7 @@ while getopts 'hm:Is:b:p' flag; do
 done
 
 if (( $max_file_size <= 0 )); then
+	echo -e "Falling back to 'gitup'.. \n"
 	gitup -m "${commit_name}" -b "${branch}"
 else
 
