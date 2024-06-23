@@ -78,7 +78,7 @@ while getopts 'hm:Is:b:p' flag; do
 	esac
 done
 
-if (( $max_file_size < 0 || $max_file_size = 0 )); then
+if (( $max_file_size <= 0 )); then
 	gitup -m "${commit_name}" -b "${branch}"
 else
 
