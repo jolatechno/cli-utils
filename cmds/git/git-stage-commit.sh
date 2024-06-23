@@ -74,7 +74,7 @@ while getopts 'hm:s:b:p' flag; do
 	esac
 done
 
-echo "commiting changes to existing file to '${commit_name}_change'"
+echo -e "\ncommiting changes to existing file to '${commit_name}_change'\n"
 git commit -am "${commit_name}_change"
 if [ "${push_each}" = true ]; then
 	git push -f origin ${branch}
@@ -92,11 +92,11 @@ for file in $to_add; do
 	this_file_size=$(du -sh --block-size=M ${file} | awk -F"M" '{print $1}')
 	if (( $added_file_size + $this_file_size > $max_file_size )); then
 		if [ "$added_file_size" = 0 ]; then
-			echo "adding ${file} to '${commit_name}_${idx}'"
+			echo -e "\nadding ${file} to '${commit_name}_${idx}'\n"
 			git add "${file}"
 		fi
 
-		echo "commited ${added_file_size}M to '${commit_name}_${idx}'"
+		echo -e "\ncommited ${added_file_size}M to '${commit_name}_${idx}'\n"
 
 		git commit -am "${commit_name}_${idx}"
 		if [ "${push_each}" = true ]; then
@@ -113,9 +113,9 @@ for file in $to_add; do
 			added_file_size=0
 		fi
 	else
-		echo "adding ${file} to '${commit_name}_${idx}'"
+		echo -e "\nadding ${file} to '${commit_name}_${idx}'\n"
 		git add "${file}"
-		
+
 		added_file_size=$(($added_file_size + $this_file_size))
 	fi
 done
