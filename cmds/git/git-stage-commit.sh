@@ -74,6 +74,7 @@ while getopts 'hm:s:b:p' flag; do
 	esac
 done
 
+echo "commiting changes to existing file to '${commit_name}_change'"
 git commit -am "${commit_name}_change"
 if [ "${push_each}" = true ]; then
 	git push -f origin ${branch}
@@ -88,7 +89,7 @@ to_add=$(git ls-files --others --exclude-standard)
 OIFS="$IFS"
 IFS=$'\n'
 for file in $to_add; do
-	this_file_size=$(du -sh --block-size=M $(file) | awk -F"M" '{print $1}')
+	this_file_size=$(du -sh --block-size=M ${file} | awk -F"M" '{print $1}')
 	if (( $added_file_size + $this_file_size > $max_file_size )); then
 		if [ "$added_file_size" = 0 ]; then
 			git add "${file}"
@@ -96,10 +97,10 @@ for file in $to_add; do
 
 		echo "commited ${added_file_size}M to '${commit_name}_${idx}'"
 
-			git commit -m "${commit_name}_${idx}"
-			if [ "${push_each}" = true ]; then
-				git push -f origin ${branch}
-			fi
+		git commit -m "${commit_name}_${idx}"
+		if [ "${push_each}" = true ]; then
+			git push -f origin ${branch}
+		fi
 		idx=$(($idx + 1))
 
 		if ! [ "$added_file_size" == 0 ]; then
