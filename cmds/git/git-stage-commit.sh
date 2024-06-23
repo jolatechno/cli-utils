@@ -35,6 +35,7 @@ Usage: \"git-stage-commit\"
 
 	-s max added file size [Mb], default is 25Mb (half of Github recommandation of 50Mb)
     -m commit name, default is 'update'
+    -I ignore first commit (that tracks changes to existing files)
     -b set branch name, default is whatever beanch you are on
     -p push at each commit
 "
@@ -56,17 +57,19 @@ if ! command -v git &> /dev/null; then
     fi
 fi
 
+first_commit=true
 max_file_size=25
 commit_name=update
 push_each=false
 branch=$(git rev-parse --abbrev-ref HEAD)
 
-while getopts 'hm:s:b:p' flag; do
+while getopts 'hm:Is:b:p' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
     s) max_file_size="${OPTARG}";;
     m) commit_name="${OPTARG}";;
+	I) first_commit=false;;
     b) branch="${OPTARG}";;
 	p) push_each=true;;
 	*) print_usage;
@@ -74,11 +77,13 @@ while getopts 'hm:s:b:p' flag; do
 	esac
 done
 
-echo -e "commiting changes to existing file to '${commit_name}_change'\n"
-git commit -am "${commit_name}_change"
-if [ "${push_each}" = true ]; then
-	echo -e "Pushing directly...\n"
-	git push -f origin ${branch}
+if [ "${first_commit}" = true ]; then
+	echo -e "commiting changes to existing file to '${commit_name}_change'\n"
+	git commit -am "${commit_name}_change"
+	if [ "${push_each}" = true ]; then
+		echo -e "Pushing directly...\n"
+		git push -f origin ${branch}
+	fi
 fi
 
 
