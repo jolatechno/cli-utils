@@ -30,13 +30,21 @@ Equivalent to \"git add . ; git commit -am 'update' ; git push -f origin main\"
 
 Usage: \"gitup\"
 	-h help
+
+    -m commit name, default is 'update'
+    -A remove the '-a' flag (don't add un-added files)
 "
 }
 
-while getopts 'h' flag; do
+add_files=true
+commit_name=update
+
+while getopts 'hm:A' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
+    A) add_files=false ;;
+    m) commit_name="${OPTARG}";;
 	*) print_usage;
 		exit 1 ;;
 	esac
@@ -59,5 +67,9 @@ if ! command -v git &> /dev/null; then
 fi
 
 git add .
-git commit -am 'update'
+if [ $add_files ]; then
+    git commit -am "${commit_name}"
+else
+    git commit -m "${commit_name}"
+fi
 git push -f origin main
