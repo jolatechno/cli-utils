@@ -42,6 +42,26 @@ Usage: \"git-stage-commit\"
 "
 }
 
+first_commit=true
+max_file_size=25
+commit_name=update
+push_each=false
+branch=None
+
+while getopts 'hm:Is:b:p' flag; do
+	case "${flag}" in
+	h) print_usage;
+		exit 1;;
+    s) max_file_size="${OPTARG}";;
+    m) commit_name="${OPTARG}";;
+    b) branch="${OPTARG}";;
+	I) first_commit=false;;
+	p) push_each=true;;
+	*) print_usage;
+		exit 1 ;;
+	esac
+done
+
 if ! command -v git &> /dev/null; then
     read -p "git not found, install ? [Y|n] " prompt
     if [[ $prompt == "Y" ]]; then
@@ -58,25 +78,9 @@ if ! command -v git &> /dev/null; then
     fi
 fi
 
-first_commit=true
-max_file_size=25
-commit_name=update
-push_each=false
-branch=$(git rev-parse --abbrev-ref HEAD)
-
-while getopts 'hm:Is:b:p' flag; do
-	case "${flag}" in
-	h) print_usage;
-		exit 1;;
-    s) max_file_size="${OPTARG}";;
-    m) commit_name="${OPTARG}";;
-	I) first_commit=false;;
-    b) branch="${OPTARG}";;
-	p) push_each=true;;
-	*) print_usage;
-		exit 1 ;;
-	esac
-done
+if [ "${branch}" = None ]; then
+	branch=$(git rev-parse --abbrev-ref HEAD)
+fi
 
 if (( $max_file_size <= 0 )); then
 	echo -e "Falling back to 'gitup'.. \n"
@@ -84,10 +88,10 @@ if (( $max_file_size <= 0 )); then
 else
 
 	if [ "${first_commit}" = true ]; then
-		echo -e "commiting changes to existing file to '${commit_name}_change'\n"
+		echo "commiting changes to existing file to '${commit_name}_change'"
 		git commit -am "${commit_name}_change"
 		if [ "${push_each}" = true ]; then
-			echo -e "Pushing directly...\n"
+			echo -e "\nPushing directly...\n"
 			git push -f origin ${branch}
 		fi
 	fi
@@ -97,51 +101,46 @@ else
 	added_file_size=0
 	to_add=$(git ls-files --others --exclude-standard)
 
-	echo -e "\nWill add: ${to_add}\n"
-
 
 	OIFS="$IFS"
 	IFS=$'\n'
 	for file in $to_add; do
-		this_file_size=$(du -sh --block-size=M ${file} | awk -F"M" '{print $1}')
-		if (( $added_file_size + $this_file_size > $max_file_size )); then
-			if [ "$added_file_size" = 0 ]; then
-				echo -e "\t- adding ${file} to '${commit_name}_${idx}'"
-				git add "${file}"
+		this_file_size=$(du -sh --block-size=K ${file} | awk -F"K" '{print $1}')
+		if (( ${added_file_size} + ${this_file_size} > ${max_file_size}*1000 )); then
+			if [ "${added_file_size}" = 0 ]; then
+				git add ${file}
 			fi
 
-			echo -e "\ncommited ${added_file_size}M to '${commit_name}_${idx}'\n"
+			echo -e "\ncommited $(( ${added_file_size}/1000 ))M to '${commit_name}_${idx}'"
 			git commit -am "${commit_name}_${idx}"
 			if [ "${push_each}" = true ]; then
-				echo -e "Pushing directly...\n"
+				echo -e "\nPushing directly...\n"
 				git push -f origin ${branch}
+			else
+				echo ""
 			fi
 			idx=$(($idx + 1))
 
-			if ! [ "$added_file_size" == 0 ]; then
-				echo "\t - adding ${file} to '${commit_name}_${idx}'"
-				git add "${file}"
-
+			if ! [ "${added_file_size}" == 0 ]; then
+				git add ${file}
 				added_file_size=$this_file_size
 			else
 				added_file_size=0
 			fi
 		else
-			echo -e "\t- adding ${file} to '${commit_name}_${idx}'"
-			git add "${file}"
-
+			git add ${file}
 			added_file_size=$(($added_file_size + $this_file_size))
 		fi
 	done
 	IFS=$OIFS
 
-	if ! [ "$added_file_size" == 0 ]; then
-		echo -e "\ncommited ${added_file_size}M to '${commit_name}_${idx}'\n"
+	if ! [ "${added_file_size}" == 0 ]; then
+		echo -e "\ncommited $(( ${added_file_size}/1000 ))M to '${commit_name}_${idx}'\n"
 		git commit -am "${commit_name}_${idx}"
 	fi
 
 	if ! [ "${push_each}" = true ]; then
-		echo -e "Pushing at the end...\n"
+		echo -e "\nPushing at the end...\n"
 		git push -f origin ${branch}
 	fi
 fi

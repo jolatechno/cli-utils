@@ -26,7 +26,7 @@ SOFTWARE.
 print_usage() {
 	printf "$License
 
-Equivalent to \"git add . ; git commit -am 'update' ; git push -f origin main\"
+Equivalent to \"git add . ; git commit -am 'update' ; git push -f origin 'branch'\"
 
 Usage: \"gitup\"
 	-h help
@@ -36,6 +36,22 @@ Usage: \"gitup\"
     -A remove the '-a' flag (don't add un-added files)
 "
 }
+
+add_files=true
+commit_name=update
+branch=None
+
+while getopts 'hm:Ab:' flag; do
+	case "${flag}" in
+	h) print_usage;
+		exit 1;;
+    A) add_files=false ;;
+    m) commit_name="${OPTARG}";;
+    b) branch="${OPTARG}";;
+	*) print_usage;
+		exit 1 ;;
+	esac
+done
 
 if ! command -v git &> /dev/null; then
     read -p "git not found, install ? [Y|n] " prompt
@@ -53,21 +69,9 @@ if ! command -v git &> /dev/null; then
     fi
 fi
 
-add_files=true
-commit_name=update
-branch=$(git rev-parse --abbrev-ref HEAD)
-
-while getopts 'hm:Ab:' flag; do
-	case "${flag}" in
-	h) print_usage;
-		exit 1;;
-    A) add_files=false ;;
-    m) commit_name="${OPTARG}";;
-    b) branch="${OPTARG}";;
-	*) print_usage;
-		exit 1 ;;
-	esac
-done
+if [ "${branch}" = None ]; then
+    branch=$(git rev-parse --abbrev-ref HEAD)
+fi
 
 if [ "${add_files}" = true ]; then
    git add .

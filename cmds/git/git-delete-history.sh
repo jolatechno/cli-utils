@@ -31,9 +31,31 @@ Delete all comit history from the main branch of a repo.
 Usage: \"git-delete-history\"
 	-h help
 
+    -m commit name, default is 'first_commit'
     -b set branch name, default is whatever beanch you are on
+    -s (for \"git-stage-commit\") max added file size [Mb], default is -1 (not limit).
+		If negative, will fallback to gitup.
+    -p (for \"git-stage-commit\") push at each commit 
 "
 }
+
+git_params=
+max_file_size=-1
+commit_name=first_commit
+branch=None
+
+while getopts 'hb:s:m:p' flag; do
+	case "${flag}" in
+	h) print_usage;
+		exit 1;;
+    s) max_file_size="${OPTARG}";;
+    m) commit_name="${OPTARG}";;
+    b) branch="${OPTARG}";;
+	p) git_params+=" -p";;
+	*) print_usage;
+		exit 1 ;;
+	esac
+done
 
 if ! command -v git &> /dev/null; then
     read -p "git not found, install ? [Y|n] " prompt
@@ -51,27 +73,17 @@ if ! command -v git &> /dev/null; then
     fi
 fi
 
-
-branch=$(git rev-parse --abbrev-ref HEAD)
-
-while getopts 'hb:' flag; do
-	case "${flag}" in
-	h) print_usage;
-		exit 1;;
-    b) branch="${OPTARG}";;
-	*) print_usage;
-		exit 1 ;;
-	esac
-done
+if [ "${branch}" = None ]; then
+	branch=$(git rev-parse --abbrev-ref HEAD)
+fi
 
 read -p "Are you sure you want to continue? [Y|n] " prompt
 if [[ $prompt == "Y" ]]; then
-	git checkout --orphan temp_branch && \
-	git add -A                        && \
-	git commit -am "the first commit" && \
-	git branch -D ${branch}           && \
-	git branch -m ${branch}           && \
-	git push -f origin ${branch}
+	git checkout --orphan temp_branch         && \
+	git commit --allow-empty -m 'root commit' && \
+	git branch -D ${branch}                   && \
+	git branch -m ${branch}                   && \
+	git-stage-commit -s ${max_file_size} -m ${commit_name} -b ${branch} -I ${git_params}
 else
 	exit 0
 fi

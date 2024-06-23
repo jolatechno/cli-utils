@@ -33,6 +33,18 @@ Usage: \"git-fix-detached-head\"
 "
 }
 
+branch=None
+
+while getopts 'hb:' flag; do
+	case "${flag}" in
+	h) print_usage;
+		exit 1;;
+    b) branch="${OPTARG}";;
+	*) print_usage;
+		exit 1 ;;
+	esac
+done
+
 if ! command -v git &> /dev/null; then
     read -p "git not found, install ? [Y|n] " prompt
     if [[ $prompt == "Y" ]]; then
@@ -49,17 +61,9 @@ if ! command -v git &> /dev/null; then
     fi
 fi
 
-branch=$(git rev-parse --abbrev-ref HEAD)
-
-while getopts 'hb:' flag; do
-	case "${flag}" in
-	h) print_usage;
-		exit 1;;
-    b) branch="${OPTARG}";;
-	*) print_usage;
-		exit 1 ;;
-	esac
-done
+if [ "${branch}" = None ]; then
+	branch=$(git rev-parse --abbrev-ref HEAD)
+fi
 
 if [[ $prompt == "Y" ]]; then
 	git switch -c temp_branch    && \
