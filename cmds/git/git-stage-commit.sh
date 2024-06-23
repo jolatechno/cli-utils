@@ -74,9 +74,10 @@ while getopts 'hm:s:b:p' flag; do
 	esac
 done
 
-echo -e "\ncommiting changes to existing file to '${commit_name}_change'\n"
+echo -e "commiting changes to existing file to '${commit_name}_change'\n"
 git commit -am "${commit_name}_change"
 if [ "${push_each}" = true ]; then
+	echo -e "Pushing directly...\n"
 	git push -f origin ${branch}
 fi
 
@@ -85,6 +86,8 @@ idx=0
 added_file_size=0
 to_add=$(git ls-files --others --exclude-standard)
 
+echo -e "\nWill add: ${to_add}\n"
+
 
 OIFS="$IFS"
 IFS=$'\n'
@@ -92,20 +95,20 @@ for file in $to_add; do
 	this_file_size=$(du -sh --block-size=M ${file} | awk -F"M" '{print $1}')
 	if (( $added_file_size + $this_file_size > $max_file_size )); then
 		if [ "$added_file_size" = 0 ]; then
-			echo -e "\nadding ${file} to '${commit_name}_${idx}'\n"
+			echo -e "\t- adding ${file} to '${commit_name}_${idx}'"
 			git add "${file}"
 		fi
 
 		echo -e "\ncommited ${added_file_size}M to '${commit_name}_${idx}'\n"
-
 		git commit -am "${commit_name}_${idx}"
 		if [ "${push_each}" = true ]; then
+			echo -e "Pushing directly...\n"
 			git push -f origin ${branch}
 		fi
 		idx=$(($idx + 1))
 
 		if ! [ "$added_file_size" == 0 ]; then
-			echo "adding ${file} to '${commit_name}_${idx}'"
+			echo "\t - adding ${file} to '${commit_name}_${idx}'"
 			git add "${file}"
 
 			added_file_size=$this_file_size
@@ -113,7 +116,7 @@ for file in $to_add; do
 			added_file_size=0
 		fi
 	else
-		echo -e "\nadding ${file} to '${commit_name}_${idx}'\n"
+		echo -e "\t- adding ${file} to '${commit_name}_${idx}'"
 		git add "${file}"
 
 		added_file_size=$(($added_file_size + $this_file_size))
@@ -121,6 +124,12 @@ for file in $to_add; do
 done
 IFS=$OIFS
 
+if ! [ "$added_file_size" == 0 ]; then
+	echo -e "\ncommited ${added_file_size}M to '${commit_name}_${idx}'\n"
+	git commit -am "${commit_name}_${idx}"
+fi
+
 if ! [ "${push_each}" = true ]; then
+	echo -e "Pushing at the end...\n"
 	git push -f origin ${branch}
 fi
