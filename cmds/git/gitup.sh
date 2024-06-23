@@ -67,7 +67,7 @@ if ! command -v git &> /dev/null; then
 fi
 
 git add .
-if [ $add_files ]; then
+if [ "${add_files}" = true ]; then
     git commit -am "${commit_name}"
 else
     git commit -m "${commit_name}"
