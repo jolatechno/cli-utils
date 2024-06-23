@@ -32,23 +32,10 @@ Usage: \"gitup\"
 	-h help
 
     -m commit name, default is 'update'
+    -b set branch name, default is whatever beanch you are on
     -A remove the '-a' flag (don't add un-added files)
 "
 }
-
-add_files=true
-commit_name=update
-
-while getopts 'hm:A' flag; do
-	case "${flag}" in
-	h) print_usage;
-		exit 1;;
-    A) add_files=false ;;
-    m) commit_name="${OPTARG}";;
-	*) print_usage;
-		exit 1 ;;
-	esac
-done
 
 if ! command -v git &> /dev/null; then
     read -p "git not found, install ? [Y|n] " prompt
@@ -66,10 +53,24 @@ if ! command -v git &> /dev/null; then
     fi
 fi
 
-git add .
+add_files=true
+commit_name=update
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+while getopts 'hm:Ab:' flag; do
+	case "${flag}" in
+	h) print_usage;
+		exit 1;;
+    A) add_files=false ;;
+    m) commit_name="${OPTARG}";;
+    b) branch="${OPTARG}";;
+	*) print_usage;
+		exit 1 ;;
+	esac
+done
+
 if [ "${add_files}" = true ]; then
-    git commit -am "${commit_name}"
-else
-    git commit -m "${commit_name}"
+   git add .
 fi
-git push -f origin main
+git commit -am "${commit_name}"
+git push -f origin ${branch}
