@@ -28,17 +28,10 @@ print_usage() {
 
 Usage: \"git-fix-detached-head\"
 	-h help
+
+    -b set branch name, default is whatever beanch you are on
 "
 }
-
-while getopts 'h' flag; do
-	case "${flag}" in
-	h) print_usage;
-		exit 1;;
-	*) print_usage;
-		exit 1 ;;
-	esac
-done
 
 if ! command -v git &> /dev/null; then
     read -p "git not found, install ? [Y|n] " prompt
@@ -56,11 +49,23 @@ if ! command -v git &> /dev/null; then
     fi
 fi
 
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+while getopts 'hb:' flag; do
+	case "${flag}" in
+	h) print_usage;
+		exit 1;;
+    b) branch="${OPTARG}";;
+	*) print_usage;
+		exit 1 ;;
+	esac
+done
+
 if [[ $prompt == "Y" ]]; then
-	git switch -c temp_branch && \
-	git switch main           && \
-	git merge temp_branch     && \
-	git push -f origin main   && \
+	git switch -c temp_branch    && \
+	git switch ${branch}         && \
+	git merge temp_branch        && \
+	git push -f origin ${branch} && \
 	git branch -D temp_branch
 else
 	exit 0

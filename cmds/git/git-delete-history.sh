@@ -30,13 +30,16 @@ Delete all comit history from the main branch of a repo.
 
 Usage: \"git-delete-history\"
 	-h help
+
+    -b set branch name, default is whatever beanch you are on
 "
 }
 
-while getopts 'h' flag; do
+while getopts 'hb:' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
+    b) branch="${OPTARG}";;
 	*) print_usage;
 		exit 1 ;;
 	esac
@@ -63,9 +66,9 @@ if [[ $prompt == "Y" ]]; then
 	git checkout --orphan temp_branch && \
 	git add -A                        && \
 	git commit -am "the first commit" && \
-	git branch -D main                && \
-	git branch -m main                && \
-	git push -f origin main
+	git branch -D ${branch}           && \
+	git branch -m ${branch}           && \
+	git push -f origin ${branch}
 else
 	exit 0
 fi
