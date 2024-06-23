@@ -79,10 +79,10 @@ fi
 
 read -p "Are you sure you want to continue? [Y|n] " prompt
 if [[ $prompt == "Y" ]]; then
-	git checkout --orphan temp_branch         && \
-	git commit --allow-empty -m 'root commit' && \
-	git branch -D ${branch}                   && \
-	git branch -m ${branch}                   && \
+	git checkout --orphan temp_branch
+	git rm --cached -rf .
+	git commit --allow-empty -am 'root commit'
+	git branch -D ${branch} && git branch -m ${branch}
 	git-stage-commit -s ${max_file_size} -m ${commit_name} -b ${branch} -I ${git_params}
 else
 	exit 0

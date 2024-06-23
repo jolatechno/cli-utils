@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 License="MIT License
 
@@ -104,11 +104,12 @@ else
 
 	OIFS="$IFS"
 	IFS=$'\n'
-	for file in $to_add; do
-		this_file_size=$(du -sh --block-size=K ${file} | awk -F"K" '{print $1}')
+	for unformated_file in $to_add; do
+		file=$(printf "${unformated_file}\n")
+		this_file_size=$(du -sh --block-size=K "${file}" | awk -F"K" '{print $1}')
 		if (( ${added_file_size} + ${this_file_size} > ${max_file_size}*1000 )); then
 			if [ "${added_file_size}" = 0 ]; then
-				git add ${file}
+				git add "${file}"
 			fi
 
 			echo -e "\ncommited $(( ${added_file_size}/1000 ))M to '${commit_name}_${idx}'"
@@ -122,13 +123,13 @@ else
 			idx=$(($idx + 1))
 
 			if ! [ "${added_file_size}" == 0 ]; then
-				git add ${file}
+				git add "${file}"
 				added_file_size=$this_file_size
 			else
 				added_file_size=0
 			fi
 		else
-			git add ${file}
+			git add "${file}"
 			added_file_size=$(($added_file_size + $this_file_size))
 		fi
 	done
