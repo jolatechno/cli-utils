@@ -77,6 +77,7 @@ if [ "${branch}" = None ]; then
 fi
 
 max_file_size=$(git config --list --local | grep stagecommit.maxfilesize | head -n 1 | sed -n -e 's/^.*=//p')
+echo $max_file_size
 if ! [ -z "${max_file_size}" ]; then
     echo "git config \"stagecommit.maxfilesize\" is set (to ${max_file_size}), will now fallback to \"git-stage-commit\" to follow this config"
     echo "to force single commit, use \"git-stage-commit -s -1\""
