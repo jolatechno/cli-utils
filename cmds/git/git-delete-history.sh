@@ -39,7 +39,7 @@ Usage: \"git-delete-history\"
     -H use https (default is ssh) for cloning for hard delete (-S)
     -s (for \"git-stage-commit\") max added file size [Mb], default is -1 (not limit).
 		If negative, will fallback to gitup.
-    -p (for \"git-stage-commit\") push at each commit
+    -p (for \"git-stage-commit\") push only at the end (default behaviour is to push at each commit)
 "
 }
 

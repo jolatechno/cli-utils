@@ -38,7 +38,7 @@ Usage: \"git-stage-commit\"
     -m commit name, default is 'update'
     -I ignore first commit (that tracks changes to existing files)
     -b set branch name, default is whatever beanch you are on
-    -p push at each commit
+    -p push only at the end (default behaviour is to push at each commit)
 "
 }
 
@@ -46,7 +46,7 @@ first_commit=true
 max_file_size_default=true
 max_file_size=25
 commit_name=update
-push_each=false
+push_each=true
 branch=None
 
 while getopts 'hm:Is:b:p' flag; do
@@ -58,7 +58,7 @@ while getopts 'hm:Is:b:p' flag; do
     m) commit_name="${OPTARG}";;
     b) branch="${OPTARG}";;
 	I) first_commit=false;;
-	p) push_each=true;;
+	p) push_each=false;;
 	*) print_usage;
 		exit 1 ;;
 	esac
