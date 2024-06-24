@@ -71,7 +71,7 @@ if ! command -v git &> /dev/null; then
     fi
 fi
 
-echo "WARNING: Only works with Github (for now) !"
+echo "WARNING: Some part may only works with Github (for now) !"
 read -p "Are you sure you want to continue? [Y|n] " prompt
 if [[ $prompt == "Y" ]]; then
 	if [ "${set_url}" = true ]; then
@@ -85,7 +85,6 @@ if [[ $prompt == "Y" ]]; then
 	        fi
 	    fi
 
-	    echo $REPO_URL
 	    USER=`echo $REPO_URL | sed -Ene's#github.com[:/]([^/]*)/(.*).git#\1#p'`
 	    if [ -z "$USER" ]; then
 	        echo "ERROR:    Could not identify User."
@@ -98,7 +97,7 @@ if [[ $prompt == "Y" ]]; then
 	        exit 1
 	    fi
 
-	    NEW_URL="gcrypt::git@github.com:$USER/$REPO"
+	    NEW_URL="gcrypt::git@github.com:${USER}/${REPO}"
 	    echo "Changing repo url from "
 	    echo "'$REPO_URL'"
 	    echo "        to "

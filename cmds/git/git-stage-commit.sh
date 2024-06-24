@@ -81,7 +81,7 @@ if ! command -v git &> /dev/null; then
 fi
 
 max_file_size_config=$(git config --list --local | grep stagecommit.maxfilesize | head -n 1 | sed -n -e 's/^.*=//p')
-if [ -z "${max_file_size_config}" ] 2> /dev/null && [ "${max_file_size_default}" = true ]; then
+if ! [ -z "${max_file_size_config}" ] 2> /dev/null && [ "${max_file_size_default}" = true ]; then
 	echo "No max file size where passed, and \"stagecommit.maxfilesize\" is set, so falling back to its value (${max_file_size_config})"
 	max_file_size=${max_file_size_config} 
 fi

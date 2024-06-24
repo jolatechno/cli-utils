@@ -40,7 +40,7 @@ if ! command -v git &> /dev/null; then
     fi
 fi
 
-echo "WARNING: Only works with Github (for now) !"
+echo "WARNING: Some part may only works with Github (for now) !"
 read -p "Are you sure you want to continue? [Y|n] " prompt
 if [[ $prompt == "Y" ]]; then
 
@@ -65,7 +65,7 @@ if [[ $prompt == "Y" ]]; then
         exit
     fi
 
-    NEW_URL="git@github.com:$USER/$REPO.git"
+    NEW_URL="git@github.com:${USER}/${REPO}.git"
     echo "Changing repo url from "
     echo "'$REPO_URL'"
     echo "        to "
