@@ -6,6 +6,8 @@ print_usage() {
     printf "code by Matt Farmer https://gist.github.com/m14t
 code at https://gist.github.com/m14t/3056747
 
+WARNING: Only works with Github (for now)
+
 this command will set the git origin from https to ssh.
 
 Usage: \"git-https-to-shh\":
@@ -38,6 +40,7 @@ if ! command -v git &> /dev/null; then
     fi
 fi
 
+echo "WARNING: Only works with Github (for now) !"
 read -p "Are you sure you want to continue? [Y|n] " prompt
 if [[ $prompt == "Y" ]]; then
 
