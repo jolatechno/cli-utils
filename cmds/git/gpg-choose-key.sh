@@ -94,7 +94,7 @@ for try in `seq 1 1 ${n_try}`; do
 		fi
 
 		if [ "${continue}" = Y ]; then
-			key=$(echo ${full_key} | sed -Ene 's#.*::([^:]+):[^:]*:.#\1#p' | sed 's/.$//')
+			key=$(echo ${full_key} | sed -Ene 's#.*::([^:]+)::*.#\1#p' | sed 's/..$//')
 			echo ${key}
 			exit
 		fi
