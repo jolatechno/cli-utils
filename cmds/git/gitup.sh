@@ -28,6 +28,9 @@ print_usage() {
 
 Equivalent to \"git add . ; git commit -am 'update' ; git push -f origin 'branch'\"
 
+If \"stagecommit.maxfilesize\" is set in git config, will fallback to
+\"git-stage-commit\" to respect this set limit.
+
 Usage: \"gitup\"
 	-h help
 
@@ -73,8 +76,15 @@ if [ "${branch}" = None ]; then
     branch=$(git rev-parse --abbrev-ref HEAD)
 fi
 
-if [ "${add_files}" = true ]; then
-   git add .
+max_file_size=$(git config --list --local | grep stagecommit.maxfilesize | head -n 1 | sed -n -e 's/^.*=//p')
+if ! [ -z "${max_file_size}" ]; then
+    echo "git config \"stagecommit.maxfilesize\" is set (to ${max_file_size}), will now fallback to \"git-stage-commit\" to follow this config"
+    echo "to force single commit, use \"git-stage-commit -s -1\""
+    git-stage-commit -m ${commit_name} -b ${branch} -s ${max_file_size}
+else
+    if [ "${add_files}" = true ]; then
+       git add .
+    fi
+    git commit -am "${commit_name}"
+    git push -f origin ${branch}
 fi
-git commit -am "${commit_name}"
-git push -f origin ${branch}

@@ -24,14 +24,37 @@ SOFTWARE.
 "
 
 print_usage() {
-	printf "$License
+	>&2 printf "$License
 
 Give choise to user of GPG key, and return (print to stdout) properly formated public key. Is usefull for other commands.
 
 Usage: \"choose-gpg-key\"
 	-h help
+
+	-k key name to first try without user input
+	-n number of try (default is 3)
+	-y continue for the first try if a key is found.
+		ATTENTION: is pretty unsafe because ypu may have found the wrong key.
 "
+
+exit 1
 }
+
+n_try=3
+input_keyid=
+continue_first_try=false
+
+while getopts 'hk:n:y' flag; do
+	case "${flag}" in
+	h) print_usage;
+		exit 1;;
+    n) n_try="${OPTARG}" ;;
+    k) input_keyid="${OPTARG}";;
+	y) continue_first_try=true;;
+	*) print_usage;
+		exit 1 ;;
+	esac
+done
 
 if ! command -v gpg &> /dev/null; then
     read -p "gpg not found, install ? [Y|n] " prompt
@@ -49,14 +72,27 @@ if ! command -v gpg &> /dev/null; then
     fi
 fi
 
-for try in {1..3}; do
-	read -p "(try ${try}/3) Key identifier: " keyid
+for try in `seq 1 1 ${n_try}`; do
+	if ! [ -z "${input_keyid}" ] 2> /dev/null && [ ${try} == 1 ]; then
+		>&2 echo "(try ${try}/3) using provided key identifier \"${input_keyid}\""
+		keyid=${input_keyid}
+	else
+		read -p "(try ${try}/3) Key identifier: " keyid
+	fi
 	full_key=$(gpg --list-signatures --with-colons | grep 'sig' | grep "${keyid}" | head -n 1)
+	
 	if [ -z "${full_key}" ]; then
 		>&2 echo "key not found !"
 	else
 		>&2 echo "Found \"${full_key}\""
-		read -p 'continue ? [Y|n] ' continue
+
+		if [ "${continue_first_try}" = true ] 2> /dev/null && [ ${try} == 1 ]; then
+			continue=Y
+			>&2 echo "Continuing without user input because the -y flag was provided"
+		else
+			read -p 'continue ? [Y|n] ' continue
+		fi
+
 		if [ "${continue}" = Y ]; then
 			key=$(echo ${full_key} | sed -Ene 's#.*::([^:]+):[^:]*:.#\1#p' | sed 's/.$//')
 			echo ${key}

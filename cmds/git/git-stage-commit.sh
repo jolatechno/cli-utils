@@ -43,6 +43,7 @@ Usage: \"git-stage-commit\"
 }
 
 first_commit=true
+max_file_size_default=true
 max_file_size=25
 commit_name=update
 push_each=false
@@ -52,7 +53,8 @@ while getopts 'hm:Is:b:p' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
-    s) max_file_size="${OPTARG}";;
+    s) max_file_size="${OPTARG}";
+	   max_file_size_default=false;;
     m) commit_name="${OPTARG}";;
     b) branch="${OPTARG}";;
 	I) first_commit=false;;
@@ -78,13 +80,22 @@ if ! command -v git &> /dev/null; then
     fi
 fi
 
+max_file_size_config=$(git config --list --local | grep stagecommit.maxfilesize | head -n 1 | sed -n -e 's/^.*=//p')
+if [ -z "${max_file_size_config}" ] 2> /dev/null && [ "${max_file_size_default}" = true ]; then
+	echo "No max file size where passed, and \"stagecommit.maxfilesize\" is set, so falling back to its value (${max_file_size_config})"
+	max_file_size=${max_file_size_config} 
+fi
+
 if [ "${branch}" = None ]; then
 	branch=$(git rev-parse --abbrev-ref HEAD)
 fi
 
 if (( $max_file_size <= 0 )); then
 	echo -e "Falling back to 'gitup'.. \n"
-	gitup -m "${commit_name}" -b "${branch}"
+
+	git add .
+    git commit -am "${commit_name}"
+    git push -f origin ${branch}
 else
 
 	if [ "${first_commit}" = true ]; then
