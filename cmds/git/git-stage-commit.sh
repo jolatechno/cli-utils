@@ -36,20 +36,18 @@ Usage: \"git-stage-commit\"
 	-s max added file size [Mb], default is 25Mb (half of Github recommandation of 50Mb).
 		If negative, will fallback to gitup.
     -m commit name, default is 'update'
-    -I ignore first commit (that tracks changes to existing files)
     -b set branch name, default is whatever beanch you are on
     -p push only at the end (default behaviour is to push at each commit)
 "
 }
 
-first_commit=true
 max_file_size_default=true
 max_file_size=25
 commit_name=update
 push_each=true
 branch=None
 
-while getopts 'hm:Is:b:p' flag; do
+while getopts 'hm:s:b:p' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
@@ -57,7 +55,6 @@ while getopts 'hm:Is:b:p' flag; do
 	   max_file_size_default=false;;
     m) commit_name="${OPTARG}";;
     b) branch="${OPTARG}";;
-	I) first_commit=false;;
 	p) push_each=false;;
 	*) print_usage;
 		exit 1 ;;
@@ -97,34 +94,31 @@ if (( $max_file_size <= 0 )); then
     git commit -am "${commit_name}"
     git push -f origin ${branch}
 else
-
-	if [ "${first_commit}" = true ]; then
-		echo "commiting changes to existing file to '${commit_name}_change'"
-		git commit -am "${commit_name}_change"
-		if [ "${push_each}" = true ]; then
-			echo -e "\nPushing directly...\n"
-			git push -f origin ${branch}
-		fi
-	fi
-
-
 	idx=0
 	added_file_size=0
-	to_add=$(git ls-files --others --exclude-standard)
+	to_add=$(git diff --name-only | cat)
+	to_add+=$(git ls-files --others --exclude-standard)
 
 
 	OIFS="$IFS"
 	IFS=$'\n'
 	for unformated_file in $to_add; do
 		file=$(printf "${unformated_file}\n")
-		this_file_size=$(du -sh --block-size=K "${file}" | awk -F"K" '{print $1}')
+
+		IFS=$' \t' read i1 i2 i3 this_file_size i4 <<< $(git ls-tree -r -l HEAD "${file}")
+		if [ -z "${this_file_size}" ]; then
+			this_file_size=$(du -sh --block-size=K "${file}" | awk -F"K" '{print $1}')
+		else
+			this_file_size=$(( ${this_file_size}/1000 ))
+		fi
+
 		if (( ${added_file_size} + ${this_file_size} > ${max_file_size}*1000 )); then
 			if [ "${added_file_size}" = 0 ]; then
 				git add "${file}"
 			fi
 
 			echo -e "\ncommited $(( ${added_file_size}/1000 ))M to '${commit_name}_${idx}'"
-			git commit -am "${commit_name}_${idx}"
+			git commit -m "${commit_name}_${idx}"
 			if [ "${push_each}" = true ]; then
 				echo -e "\nPushing directly...\n"
 				git push -f origin ${branch}
