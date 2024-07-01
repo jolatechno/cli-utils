@@ -109,9 +109,10 @@ else
 	for unformated_file in $to_add; do
 		file=$(printf "${unformated_file}\n")
 
-		IFS=$' \t' read i1 i2 i3 this_file_size i4 <<< $(git ls-tree -r -l HEAD "${file}")
+		IFS=$' \t' read _ _ _ this_file_size _ <<< $(git ls-tree -r -l HEAD "${file}")
 		this_file_size=$(echo $this_file_size | tr -d ' ')
-		if [ -z "${this_file_size}" ]; then
+		echo
+		if [ -z "${this_file_size}" ] 2> /dev/null && [[ -z ${this_file_size//[0–9]} ]]; then
 			this_file_size=$(du -sh --block-size=K "${file}" | awk -F"K" '{print $1}')
 		else
 			this_file_size=$(( ${this_file_size}/1000 ))
