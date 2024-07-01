@@ -110,6 +110,7 @@ else
 		file=$(printf "${unformated_file}\n")
 
 		IFS=$' \t' read i1 i2 i3 this_file_size i4 <<< $(git ls-tree -r -l HEAD "${file}")
+		this_file_size=$(echo $this_file_size | tr -d ' ')
 		if [ -z "${this_file_size}" ]; then
 			this_file_size=$(du -sh --block-size=K "${file}" | awk -F"K" '{print $1}')
 		else
