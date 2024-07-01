@@ -111,7 +111,7 @@ else
 
 		IFS=$' \t' read _ _ _ this_file_size _ <<< $(git ls-tree -r -l HEAD "${file}")
 		this_file_size=$(echo $this_file_size | tr -d ' ')
-		if [[ -z "${this_file_size//[0–9]}" ]] || [ -z "${this_file_size}" ]; then
+		if [[ ! $this_file_size =~ ^[0-9] ]] || [ -z "${this_file_size}" ]; then
 			this_file_size=$(du -sh --block-size=K "${file}" | awk -F"K" '{print $1}')
 			if [ "${verbose}" = true ]; then
 				echo "adding ${file} ${this_file_size}Kb (size from du)"
