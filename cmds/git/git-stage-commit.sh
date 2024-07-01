@@ -38,6 +38,8 @@ Usage: \"git-stage-commit\"
     -m commit name, default is 'update'
     -b set branch name, default is whatever beanch you are on
     -p push only at the end (default behaviour is to push at each commit)
+
+    -v verbose
 "
 }
 
@@ -46,8 +48,9 @@ max_file_size=25
 commit_name=update
 push_each=true
 branch=None
+verbose=false
 
-while getopts 'hm:s:b:p' flag; do
+while getopts 'hm:s:b:pv' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
@@ -56,6 +59,7 @@ while getopts 'hm:s:b:p' flag; do
     m) commit_name="${OPTARG}";;
     b) branch="${OPTARG}";;
 	p) push_each=false;;
+	v) verbose=true;;
 	*) print_usage;
 		exit 1 ;;
 	esac
@@ -111,7 +115,9 @@ else
 		else
 			this_file_size=$(( ${this_file_size}/1000 ))
 		fi
-		echo "${file} ${this_file_size}Kb"
+		if [ "${verbose}" = true ]; then
+			echo "adding ${file} ${this_file_size}Kb"
+		fi
 
 		if (( ${added_file_size} + ${this_file_size} > ${max_file_size}*1000 )); then
 			if [ "${added_file_size}" = 0 ]; then
