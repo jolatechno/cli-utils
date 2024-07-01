@@ -111,6 +111,7 @@ else
 		else
 			this_file_size=$(( ${this_file_size}/1000 ))
 		fi
+		echo "${file} ${this_file_size}Kb"
 
 		if (( ${added_file_size} + ${this_file_size} > ${max_file_size}*1000 )); then
 			if [ "${added_file_size}" = 0 ]; then
