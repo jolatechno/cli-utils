@@ -32,14 +32,13 @@ It is usefull for \"git-remote-gcrypt\" so that the encrypted commit doesn't exc
 
 Usage: \"git-stage-commit\"
 	-h help
+    -v verbose
 
 	-s max added file size [Mb], default is 25Mb (half of Github recommandation of 50Mb).
 		If negative, will fallback to gitup.
     -m commit name, default is 'update'
     -b set branch name, default is whatever beanch you are on
     -p push only at the end (default behaviour is to push at each commit)
-
-    -v verbose
 "
 }
 

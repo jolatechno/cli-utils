@@ -32,6 +32,7 @@ Delete all comit history from the main branch of a repo.
 
 Usage: \"git-delete-history\"
 	-h help
+	-v verbose
 
     -m commit name, default is 'first_commit'
     -b set branch name, default is whatever beanch you are on
@@ -50,8 +51,10 @@ branch=None
 hard_delete=false
 use_https=false
 max_file_size_default=true
+verbose=false
+stage_commit_args=
 
-while getopts 'hb:s:m:pSH' flag; do
+while getopts 'hb:s:m:pSHv' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
@@ -62,6 +65,8 @@ while getopts 'hb:s:m:pSH' flag; do
 	p) git_params+=" -p";;
 	S) hard_delete=true;;
 	H) use_https=true;;
+	v) verbose=true;
+	   stage_commit_args+=-v;;
 	*) print_usage;
 		exit 1 ;;
 	esac
@@ -144,7 +149,7 @@ if [[ "${prompt}" == "Y" ]]; then
 	git rm --cached -rf .
 	git branch -D ${branch} && git branch -m ${branch}
 	git commit --allow-empty -am 'root commit'
-	git-stage-commit -s ${max_file_size} -m ${commit_name} -b ${branch} ${git_params}
+	git-stage-commit -s ${max_file_size} -m ${commit_name} -b ${branch} ${git_params} ${stage_commit_args}
 else
 	exit 0
 fi

@@ -33,6 +33,7 @@ If \"stagecommit.maxfilesize\" is set in git config, will fallback to
 
 Usage: \"gitup\"
 	-h help
+    -v verbose
 
     -m commit name, default is 'update'
     -b set branch name, default is whatever beanch you are on
@@ -43,14 +44,18 @@ Usage: \"gitup\"
 add_files=true
 commit_name=update
 branch=None
+verbose=false
+stage_commit_args=
 
-while getopts 'hm:Ab:' flag; do
+while getopts 'hm:Ab:v' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
     A) add_files=false ;;
     m) commit_name="${OPTARG}";;
     b) branch="${OPTARG}";;
+    v) verbose=true;
+       stage_commit_args+=-v;;
 	*) print_usage;
 		exit 1 ;;
 	esac
@@ -79,7 +84,7 @@ fi
 max_file_size=$(git config --list --local | grep stagecommit.maxfilesize | head -n 1 | sed -n -e 's/^.*=//p')
 if ! [ -z "${max_file_size}" ]; then
     echo -e "git config \"stagecommit.maxfilesize\" is set (to ${max_file_size}), will now fallback to \"git-stage-commit\" to follow this config.\nTo force single commit, use \"git-stage-commit -s -1\", or unset \"stagecommit.maxfilesize\"\n"
-    git-stage-commit -m ${commit_name} -b ${branch} -s ${max_file_size}
+    git-stage-commit -m ${commit_name} -b ${branch} -s ${max_file_size} ${stage_commit_args}
 else
     if [ "${add_files}" = true ]; then
        git add .
