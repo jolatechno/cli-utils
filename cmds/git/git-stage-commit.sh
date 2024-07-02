@@ -99,7 +99,7 @@ if (( $max_file_size <= 0 )); then
 else
 	idx=0
 	added_file_size=0
-	to_add=$(git diff --name-only | cat)
+	to_add=$(git diff --name-only)
 	to_add+=$(git ls-files --others --exclude-standard)
 
 
@@ -108,17 +108,24 @@ else
 	for unformated_file in $to_add; do
 		file=$(printf "${unformated_file}\n")
 
+		if [ ! -f "${file}" ]; then
+			if [ "${verbose}" = true ]; then
+				echo "'${file}' not found (probably deleted), skipping"
+			fi
+			continue
+		fi
+
 		IFS=$' \t' read _ _ _ this_file_size _ <<< $(git ls-tree -r -l HEAD "${file}")
 		this_file_size=$(echo $this_file_size | tr -d ' ')
 		if [[ ! $this_file_size =~ ^[0-9] ]] || [ -z "${this_file_size}" ]; then
 			this_file_size=$(du -sh --block-size=K "${file}" | awk -F"K" '{print $1}')
 			if [ "${verbose}" = true ]; then
-				echo "adding ${file} ${this_file_size}Kb (size from du)"
+				echo "adding '${file}' ${this_file_size}Kb (size from du)"
 			fi
 		else
 			this_file_size=$(( ${this_file_size}/1000 ))
 			if [ "${verbose}" = true ]; then
-				echo "adding ${file} ${this_file_size}Kb (size from git)"
+				echo "adding '${file}' ${this_file_size}Kb (size from git)"
 			fi
 		fi
 
