@@ -142,6 +142,8 @@ if [[ "${prompt}" == "Y" ]]; then
 			git config --global user.signingkey "${key_fingerprint}"
 	    	git remote set-url origin "gcrypt::git@github.com:${USER}/${REPO}"
 			git push origin main
+			cd ../
+			rm -rf ${REPO}
 		)
 	fi
 

@@ -105,12 +105,10 @@ else
 
 	to_add=$to_add_dif
 	if [ ! -z "${to_add}" ] && [ ! -z "${to_add_new}" ]; then
-		to_add+=$'\n'
-		to_add+=$to_add_new
+		to_add+="$IFS"
 	fi
+	to_add+=$to_add_new
 
-	OIFS="$IFS"
-	IFS=$'\n'
 	for unformated_file in $to_add; do
 		file=$(printf "${unformated_file}\n")
 
@@ -161,7 +159,6 @@ else
 			added_file_size=$(($added_file_size + $this_file_size))
 		fi
 	done
-	IFS=$OIFS
 
 	if ! [ "${added_file_size}" == 0 ]; then
 		echo -e "\ncommited $(( ${added_file_size}/1000 ))M to '${commit_name}_${idx}'\n"
