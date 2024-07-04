@@ -81,7 +81,7 @@ if ! command -v git &> /dev/null; then
 fi
 
 max_file_size_config=$(git config --list --local | grep stagecommit.maxfilesize | head -n 1 | sed -n -e 's/^.*=//p')
-if ! [ -z "${max_file_size_config}" ] 2> /dev/null && [ "${max_file_size_default}" = true ]; then
+if ! [ -z "${max_file_size_config}" ] && [ "${max_file_size_default}" = true ]; then
 	echo "No max file size where passed, and \"stagecommit.maxfilesize\" is set, so falling back to its value (${max_file_size_config})"
 	max_file_size=${max_file_size_config} 
 fi
@@ -99,9 +99,15 @@ if (( $max_file_size <= 0 )); then
 else
 	idx=0
 	added_file_size=0
-	to_add=$(git diff --name-only)
-	to_add+=$(git ls-files --others --exclude-standard)
 
+	to_add_dif=$(git diff --name-only)
+	to_add_new=$(git ls-files --others --exclude-standard)
+
+	to_add=$to_add_dif
+	if [ ! -z "${to_add}" ] && [ ! -z "${to_add_new}" ]; then
+		to_add+=$'\n'
+		to_add+=$to_add_new
+	fi
 
 	OIFS="$IFS"
 	IFS=$'\n'
