@@ -112,7 +112,7 @@ else
 	for unformated_file in $to_add; do
 		file=$(printf "${unformated_file}\n")
 
-		if [ ! -f "${file}" ]; then
+		if [ ! -f "${file}" ] && [ ! -d "${file}" ]; then
 			if [ "${verbose}" = true ]; then
 				echo "'${file}' not found (probably deleted), skipping"
 			fi
