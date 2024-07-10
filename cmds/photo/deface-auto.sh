@@ -24,29 +24,29 @@ SOFTWARE.
 "
 
 print_usage() {
-    printf "$License
+	printf "$License
 
 Usage: \"compress-all-jpg\"
-    -h help
+	-h help
 "
 }
 
 while getopts 'h' flag; do
-    case "${flag}" in
-    h) print_usage;
-        exit 1;;
-    *) print_usage;
-        exit 1 ;;
-    esac
+	case "${flag}" in
+	h) print_usage;
+		exit 1;;
+	*) print_usage;
+		exit 1 ;;
+	esac
 done
 
 if ! command -v deface &> /dev/null; then
-    read -p "deface not found, install ? [Y|n] " prompt
-    if [[ $prompt == "Y" ]]; then
-        python3 -m pip install deface
-    else
-        exit 0
-    fi
+	read -p "deface not found, install ? [Y|n] " prompt
+	if [[ $prompt == "Y" ]]; then
+		python3 -m pip install deface
+	else
+		exit 0
+	fi
 fi
 
 deface --mask-scale 1.0 --replacewith blur --thresh 0.18 \

@@ -29,7 +29,7 @@ print_usage() {
 Usage: \"git-fix-detached-head\"
 	-h help
 
-    -b set branch name, default is whatever beanch you are on
+	-b set branch name, default is whatever beanch you are on
 "
 }
 
@@ -39,26 +39,26 @@ while getopts 'hb:' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
-    b) branch="${OPTARG}";;
+	b) branch="${OPTARG}";;
 	*) print_usage;
 		exit 1 ;;
 	esac
 done
 
 if ! command -v git &> /dev/null; then
-    read -p "git not found, install ? [Y|n] " prompt
-    if [[ $prompt == "Y" ]]; then
-        if command -v pacman &> /dev/null; then
-            pacman -Sy git
-        elif command -v apt-get &> /dev/null; then
-            apt-get install git
-        else
-            echo "Installing command not found, try to install yourself."
-            exit 1
-        fi
-    else
-        exit 0
-    fi
+	read -p "git not found, install ? [Y|n] " prompt
+	if [[ $prompt == "Y" ]]; then
+		if command -v pacman &> /dev/null; then
+			pacman -Sy git
+		elif command -v apt-get &> /dev/null; then
+			apt-get install git
+		else
+			echo "Installing command not found, try to install yourself."
+			exit 1
+		fi
+	else
+		exit 0
+	fi
 fi
 
 if [ "${branch}" = None ]; then

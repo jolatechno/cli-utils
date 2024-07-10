@@ -32,13 +32,13 @@ It is usefull for \"git-remote-gcrypt\" so that the encrypted commit doesn't exc
 
 Usage: \"git-stage-commit\"
 	-h help
-    -v verbose
+	-v verbose
 
 	-s max added file size [Mb], default is 25Mb (half of Github recommandation of 50Mb).
 		If negative, will fallback to gitup.
-    -m commit name, default is 'update'
-    -b set branch name, default is whatever beanch you are on
-    -p push only at the end (default behaviour is to push at each commit)
+	-m commit name, default is 'update'
+	-b set branch name, default is whatever beanch you are on
+	-p push only at the end (default behaviour is to push at each commit)
 "
 }
 
@@ -53,10 +53,10 @@ while getopts 'hm:s:b:pv' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
-    s) max_file_size="${OPTARG}";
+	s) max_file_size="${OPTARG}";
 	   max_file_size_default=false;;
-    m) commit_name="${OPTARG}";;
-    b) branch="${OPTARG}";;
+	m) commit_name="${OPTARG}";;
+	b) branch="${OPTARG}";;
 	p) push_each=false;;
 	v) verbose=true;;
 	*) print_usage;
@@ -65,19 +65,19 @@ while getopts 'hm:s:b:pv' flag; do
 done
 
 if ! command -v git &> /dev/null; then
-    read -p "git not found, install ? [Y|n] " prompt
-    if [[ $prompt == "Y" ]]; then
-        if command -v pacman &> /dev/null; then
-            pacman -Sy git
-        elif command -v apt-get &> /dev/null; then
-            apt-get install git
-        else
-            echo "Installing command not found, try to install yourself."
-            exit 1
-        fi
-    else
-        exit 0
-    fi
+	read -p "git not found, install ? [Y|n] " prompt
+	if [[ $prompt == "Y" ]]; then
+		if command -v pacman &> /dev/null; then
+			pacman -Sy git
+		elif command -v apt-get &> /dev/null; then
+			apt-get install git
+		else
+			echo "Installing command not found, try to install yourself."
+			exit 1
+		fi
+	else
+		exit 0
+	fi
 fi
 
 max_file_size_config=$(git config --list --local | grep stagecommit.maxfilesize | head -n 1 | sed -n -e 's/^.*=//p')
@@ -94,8 +94,8 @@ if (( $max_file_size <= 0 )); then
 	echo -e "Falling back to 'gitup'.. \n"
 
 	git add .
-    git commit -am "${commit_name}"
-    git push -f origin ${branch}
+	git commit -am "${commit_name}"
+	git push -f origin ${branch}
 else
 	idx=0
 	added_file_size=0

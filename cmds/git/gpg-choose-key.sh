@@ -48,8 +48,8 @@ while getopts 'hk:n:y' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
-    n) n_try="${OPTARG}" ;;
-    k) input_keyid="${OPTARG}";;
+	n) n_try="${OPTARG}";;
+	k) input_keyid="${OPTARG}";;
 	y) continue_first_try=true;;
 	*) print_usage;
 		exit 1 ;;
@@ -57,19 +57,19 @@ while getopts 'hk:n:y' flag; do
 done
 
 if ! command -v gpg &> /dev/null; then
-    read -p "gpg not found, install ? [Y|n] " prompt
-    if [[ $prompt == "Y" ]]; then
-        if command -v pacman &> /dev/null; then
-            pacman -Sy gnupg
-        elif command -v apt-get &> /dev/null; then
-            apt-get install gnupg2
-        else
-            echo "Installing command not found, try to install yourself."
-            exit 1
-        fi
-    else
-        exit 0
-    fi
+	read -p "gpg not found, install ? [Y|n] " prompt
+	if [[ $prompt == "Y" ]]; then
+		if command -v pacman &> /dev/null; then
+			pacman -Sy gnupg
+		elif command -v apt-get &> /dev/null; then
+			apt-get install gnupg2
+		else
+			echo "Installing command not found, try to install yourself."
+			exit 1
+		fi
+	else
+		exit 0
+	fi
 fi
 
 for try in `seq 1 1 ${n_try}`; do

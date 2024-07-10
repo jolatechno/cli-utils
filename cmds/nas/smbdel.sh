@@ -40,8 +40,8 @@ while getopts 'h' flag; do
 done
 
 if [ "$(id -un)" != "root" ]; then
-		echo "root privilege needed..."
-		exit 1
+	echo "root privilege needed..."
+	exit 1
 fi
 
 old_IFS=$IFS; IFS=$'\n'

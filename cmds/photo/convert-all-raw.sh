@@ -24,60 +24,60 @@ SOFTWARE.
 "
 
 print_usage() {
-    printf "$License
+	printf "$License
 
 Usage: \"convert-all-raw\"
-    -h help
+	-h help
 
-    -r recursive
+	-r recursive
 "
 }
 
 recursive=false
 
 while getopts 'hr' flag; do
-    case "${flag}" in
-    h) print_usage;
-        exit 1;;
-    r) recursive=true;;
-    *) print_usage;
-        exit 1 ;;
-    esac
+	case "${flag}" in
+	h) print_usage;
+		exit 1;;
+	r) recursive=true;;
+	*) print_usage;
+		exit 1 ;;
+	esac
 done
 
 find_all() {
-    first=1
-    for ext in "$@"; do
-        if [[ $first == 1 ]]; then
-            find_filter=(-iname "*.$ext")
-            first=0
-        else
-            find_filter+=( -o -iname "*.$ext")
-        fi
-    done
+	first=1
+	for ext in "$@"; do
+		if [[ $first == 1 ]]; then
+			find_filter=(-iname "*.$ext")
+			first=0
+		else
+			find_filter+=( -o -iname "*.$ext")
+		fi
+	done
 
-    additional_flag=""
-    if [ $recursive == false ] ; then
-        additional_flag+="-maxdepth 1"
-    fi
+	additional_flag=""
+	if [ $recursive == false ] ; then
+		additional_flag+="-maxdepth 1"
+	fi
 
-    echo "$(find . ${additional_flag} -type f \( "${find_filter[@]}" \) | cut -b 3-)"
+	echo "$(find . ${additional_flag} -type f \( "${find_filter[@]}" \) | cut -b 3-)"
 }
 
 if ! command -v ffmpeg &> /dev/null; then
-    read -p "ffmpeg not found, install ? [Y|n] " prompt
-    if [[ $prompt == "Y" ]]; then
-        if command -v pacman &> /dev/null; then
-            sudo pacman -Sy ffmpeg
-        elif command -v apt-get &> /dev/null; then
-            sudo apt-get install ffmpeg
-        else
-            echo "Installing command not found, try to install yourself."
-            exit 1
-        fi
-    else
-        exit 0
-    fi
+	read -p "ffmpeg not found, install ? [Y|n] " prompt
+	if [[ $prompt == "Y" ]]; then
+		if command -v pacman &> /dev/null; then
+			sudo pacman -Sy ffmpeg
+		elif command -v apt-get &> /dev/null; then
+			sudo apt-get install ffmpeg
+		else
+			echo "Installing command not found, try to install yourself."
+			exit 1
+		fi
+	else
+		exit 0
+	fi
 fi
 
 all=$(find_all "ARW" "CR2" "tiff" "tif" "DNG" "NEF")
@@ -85,9 +85,9 @@ OIFS="$IFS"
 IFS=$'\n'
 for file in $all; do
 	outfile=converted_$(basename "${file%.*}").jpg
-    if [ ! -f "$outfile" ]; then
+	if [ ! -f "$outfile" ]; then
 		echo "exporting $file -> $outfile"
 		convert -quality 96 $file $outfile
-    fi
+	fi
 done
 IFS=$OIFS

@@ -46,8 +46,8 @@ while getopts 'm:o:h' flag; do
 	case "${flag}" in
 		h) print_usage;
 			exit 1;;
-    	m) mount_point="${OPTARG}";;
-	    o) output_folder="${OPTARG}";;
+		m) mount_point="${OPTARG}";;
+		o) output_folder="${OPTARG}";;
 		*) print_usage;
 			exit 1;;
 	esac

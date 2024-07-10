@@ -56,54 +56,54 @@ while getopts 'hukv' flag; do
 done
 
 if ! command -v git &> /dev/null; then
-    read -p "git not found, install ? [Y|n] " prompt
-    if [[ $prompt == "Y" ]]; then
-        if command -v pacman &> /dev/null; then
-            pacman -Sy git
-        elif command -v apt-get &> /dev/null; then
-            apt-get install git
-        else
-            echo "Installing command not found, try to install yourself."
-            exit 1
-        fi
-    else
-        exit 0
-    fi
+	read -p "git not found, install ? [Y|n] " prompt
+	if [[ $prompt == "Y" ]]; then
+		if command -v pacman &> /dev/null; then
+			pacman -Sy git
+		elif command -v apt-get &> /dev/null; then
+			apt-get install git
+		else
+			echo "Installing command not found, try to install yourself."
+			exit 1
+		fi
+	else
+		exit 0
+	fi
 fi
 
 echo "WARNING: Some part may only works with Github (for now) !"
 read -p "Are you sure you want to continue? [Y|n] " prompt
 if [[ $prompt == "Y" ]]; then
 	if [ "${set_url}" = true ]; then
-	    REPO_URL=`git remote -v | grep -m1 '^origin' | sed -Ene's#.*https://([^[:space:]]*).*#\1#p'`
-	    if [ -z "$REPO_URL" ]; then
-	    	REPO_URL=`git remote -v | grep -m1 '^origin' | sed -Ene's#.*git@([^[:space:]]*).*#\1#p'`
-	    	if [ -z "$REPO_URL" ]; then
-		        echo "ERROR:    Could not identify Repo url."
-		        echo "It is possible this repo is already using SSH instead of HTTPS."
-	        	exit 1
-	        fi
-	    fi
+		REPO_URL=`git remote -v | grep -m1 '^origin' | sed -Ene's#.*https://([^[:space:]]*).*#\1#p'`
+		if [ -z "$REPO_URL" ]; then
+			REPO_URL=`git remote -v | grep -m1 '^origin' | sed -Ene's#.*git@([^[:space:]]*).*#\1#p'`
+			if [ -z "$REPO_URL" ]; then
+				echo "ERROR:    Could not identify Repo url."
+				echo "It is possible this repo is already using SSH instead of HTTPS."
+				exit 1
+			fi
+		fi
 
-	    USER=`echo $REPO_URL | sed -Ene's#github.com[:/]([^/]*)/(.*).git#\1#p'`
-	    if [ -z "$USER" ]; then
-	        echo "ERROR:    Could not identify User."
-	        exit 1
-	    fi
+		USER=`echo $REPO_URL | sed -Ene's#github.com[:/]([^/]*)/(.*).git#\1#p'`
+		if [ -z "$USER" ]; then
+			echo "ERROR:    Could not identify User."
+			exit 1
+		fi
 
-	    REPO=`echo $REPO_URL | sed -Ene's#github.com[:/]([^/]*)/(.*).git#\2#p'`
-	    if [ -z "$REPO" ]; then
-	        echo "ERROR:    Could not identify Repo."
-	        exit 1
-	    fi
+		REPO=`echo $REPO_URL | sed -Ene's#github.com[:/]([^/]*)/(.*).git#\2#p'`
+		if [ -z "$REPO" ]; then
+			echo "ERROR:    Could not identify Repo."
+			exit 1
+		fi
 
-	    NEW_URL="gcrypt::git@github.com:${USER}/${REPO}"
-	    echo "Changing repo url from "
-	    echo "'$REPO_URL'"
-	    echo "        to "
-	    echo "'$NEW_URL'"
+		NEW_URL="gcrypt::git@github.com:${USER}/${REPO}"
+		echo "Changing repo url from "
+		echo "'$REPO_URL'"
+		echo "        to "
+		echo "'$NEW_URL'"
 
-	    git remote set-url origin $NEW_URL
+		git remote set-url origin $NEW_URL
 	fi
 
 	if [ "${set_gpg_key}" = true ]; then
@@ -126,6 +126,6 @@ if [[ $prompt == "Y" ]]; then
 		git config --local stagecommit.maxfilesize ${max_file_size}
 	fi
 else
-    exit 0
+	exit 0
 fi
 

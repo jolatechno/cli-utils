@@ -26,10 +26,10 @@ SOFTWARE.
 print_usage() {
 	printf "$License
 Usage: \"sudo spindown -d drive_device_name -t time\"
+	-h help
+
 	-t spin down time (default is 25, see hdparm for more info)
 	-d drive name (default is \"sda\")
-
-	-h help
 "
 }
 
@@ -53,19 +53,19 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 if ! command -v hdparm &> /dev/null; then
-    read -p "hdparm not found, install ? [Y|n] " prompt
-    if [[ $prompt == "Y" ]]; then
-        if command -v pacman &> /dev/null; then
-            pacman -Sy hdparm
-        elif command -v apt-get &> /dev/null; then
-            apt-get install hdparm
-        else
-            echo "Installing command not found, try to install yourself."
-            exit 1
-        fi
-    else
-        exit 0
-    fi
+	read -p "hdparm not found, install ? [Y|n] " prompt
+	if [[ $prompt == "Y" ]]; then
+		if command -v pacman &> /dev/null; then
+			pacman -Sy hdparm
+		elif command -v apt-get &> /dev/null; then
+			apt-get install hdparm
+		else
+			echo "Installing command not found, try to install yourself."
+			exit 1
+		fi
+	else
+		exit 0
+	fi
 fi
 
 param="\n

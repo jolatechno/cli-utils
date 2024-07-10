@@ -45,7 +45,7 @@ while getopts 'm:h' flag; do
 	case "${flag}" in
 		h) print_usage;
 			exit 1;;
-    	m) mount_point="${OPTARG}";;
+		m) mount_point="${OPTARG}";;
 		*) print_usage;
 			exit 1;;
 	esac

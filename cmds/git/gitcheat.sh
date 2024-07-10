@@ -26,10 +26,10 @@ SOFTWARE.
 print_usage() {
   printf "$License
 Usage: \"gitcheat -v/t\"
-  -v visual cheat-sheet about branches
-  -t textual cheat-sheet
+    -h help
 
-  -h help
+    -v visual cheat-sheet about branches
+    -t textual cheat-sheet
 "
 }
 

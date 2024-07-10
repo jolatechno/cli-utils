@@ -33,11 +33,11 @@ If \"stagecommit.maxfilesize\" is set in git config, will fallback to
 
 Usage: \"gitup\"
 	-h help
-    -v verbose
+	-v verbose
 
-    -m commit name, default is 'update'
-    -b set branch name, default is whatever beanch you are on
-    -A remove the '-a' flag (don't add un-added files)
+	-m commit name, default is 'update'
+	-b set branch name, default is whatever beanch you are on
+	-A remove the '-a' flag (don't add un-added files)
 "
 }
 
@@ -51,44 +51,44 @@ while getopts 'hm:Ab:v' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
-    A) add_files=false ;;
-    m) commit_name="${OPTARG}";;
-    b) branch="${OPTARG}";;
-    v) verbose=true;
-       stage_commit_args+=-v;;
+	A) add_files=false ;;
+	m) commit_name="${OPTARG}";;
+	b) branch="${OPTARG}";;
+	v) verbose=true;
+	   stage_commit_args+=-v;;
 	*) print_usage;
 		exit 1 ;;
 	esac
 done
 
 if ! command -v git &> /dev/null; then
-    read -p "git not found, install ? [Y|n] " prompt
-    if [[ $prompt == "Y" ]]; then
-        if command -v pacman &> /dev/null; then
-            pacman -Sy git
-        elif command -v apt-get &> /dev/null; then
-            apt-get install git
-        else
-            echo "Installing command not found, try to install yourself."
-            exit 1
-        fi
-    else
-        exit 0
-    fi
+	read -p "git not found, install ? [Y|n] " prompt
+	if [[ $prompt == "Y" ]]; then
+		if command -v pacman &> /dev/null; then
+			pacman -Sy git
+		elif command -v apt-get &> /dev/null; then
+			apt-get install git
+		else
+			echo "Installing command not found, try to install yourself."
+			exit 1
+		fi
+	else
+		exit 0
+	fi
 fi
 
 if [ "${branch}" = None ]; then
-    branch=$(git rev-parse --abbrev-ref HEAD)
+	branch=$(git rev-parse --abbrev-ref HEAD)
 fi
 
 max_file_size=$(git config --list --local | grep stagecommit.maxfilesize | head -n 1 | sed -n -e 's/^.*=//p')
 if ! [ -z "${max_file_size}" ]; then
-    echo -e "git config \"stagecommit.maxfilesize\" is set (to ${max_file_size}), will now fallback to \"git-stage-commit\" to follow this config.\nTo force single commit, use \"git-stage-commit -s -1\", or unset \"stagecommit.maxfilesize\"\n"
-    git-stage-commit -m ${commit_name} -b ${branch} -s ${max_file_size} ${stage_commit_args}
+	echo -e "git config \"stagecommit.maxfilesize\" is set (to ${max_file_size}), will now fallback to \"git-stage-commit\" to follow this config.\nTo force single commit, use \"git-stage-commit -s -1\", or unset \"stagecommit.maxfilesize\"\n"
+	git-stage-commit -m ${commit_name} -b ${branch} -s ${max_file_size} ${stage_commit_args}
 else
-    if [ "${add_files}" = true ]; then
-       git add .
-    fi
-    git commit -am "${commit_name}"
-    git push -f origin ${branch}
+	if [ "${add_files}" = true ]; then
+	   git add .
+	fi
+	git commit -am "${commit_name}"
+	git push -f origin ${branch}
 fi

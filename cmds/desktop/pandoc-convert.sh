@@ -28,7 +28,7 @@ print_usage() {
 
 Can convert .ipynb, .html, .md, and a lot of file type to some other file types
 
-Usage: \"pandoc-convert -p -o -f file1 file2 ...\"
+Usage: \"pandoc-convert -p -o file1 file2 ...\"
 	-h help
 
 	-p convert to .pdf
@@ -40,7 +40,6 @@ Usage: \"pandoc-convert -p -o -f file1 file2 ...\"
 	-l convert to .tex
 
 	-O any other type
-
 "
 }
 

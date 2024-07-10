@@ -34,13 +34,13 @@ Usage: \"git-delete-history\"
 	-h help
 	-v verbose
 
-    -m commit name, default is 'first_commit'
-    -b set branch name, default is whatever beanch you are on
-    -S hard delete (only for repository set up with \"git-remote-gcrypt\")
-    -H use https (default is ssh) for cloning for hard delete (-S)
-    -s (for \"git-stage-commit\") max added file size [Mb], default is -1 (not limit).
+	-m commit name, default is 'first_commit'
+	-b set branch name, default is whatever beanch you are on
+	-S hard delete (only for repository set up with \"git-remote-gcrypt\")
+	-H use https (default is ssh) for cloning for hard delete (-S)
+	-s (for \"git-stage-commit\") max added file size [Mb], default is -1 (not limit).
 		If negative, will fallback to gitup.
-    -p (for \"git-stage-commit\") push only at the end (default behaviour is to push at each commit)
+	-p (for \"git-stage-commit\") push only at the end (default behaviour is to push at each commit)
 "
 }
 
@@ -58,10 +58,10 @@ while getopts 'hb:s:m:pSHv' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
-    s) max_file_size="${OPTARG}";
+	s) max_file_size="${OPTARG}";
 	   max_file_size_default=false;;
-    m) commit_name="${OPTARG}";;
-    b) branch="${OPTARG}";;
+	m) commit_name="${OPTARG}";;
+	b) branch="${OPTARG}";;
 	p) git_params+=" -p";;
 	S) hard_delete=true;;
 	H) use_https=true;;
@@ -73,19 +73,19 @@ while getopts 'hb:s:m:pSHv' flag; do
 done
 
 if ! command -v git &> /dev/null; then
-    read -p "git not found, install ? [Y|n] " prompt
-    if [[ $prompt == "Y" ]]; then
-        if command -v pacman &> /dev/null; then
-            pacman -Sy git
-        elif command -v apt-get &> /dev/null; then
-            apt-get install git
-        else
-            echo "Installing command not found, try to install yourself."
-            exit 1
-        fi
-    else
-        exit 0
-    fi
+	read -p "git not found, install ? [Y|n] " prompt
+	if [[ $prompt == "Y" ]]; then
+		if command -v pacman &> /dev/null; then
+			pacman -Sy git
+		elif command -v apt-get &> /dev/null; then
+			apt-get install git
+		else
+			echo "Installing command not found, try to install yourself."
+			exit 1
+		fi
+	else
+		exit 0
+	fi
 fi
 
 if [ "${branch}" = None ]; then
@@ -103,22 +103,22 @@ read -p "Are you sure you want to continue? [Y|n] " prompt
 if [[ "${prompt}" == "Y" ]]; then
 	if [ "${hard_delete}" = true ]; then
 		REPO_URL=`git remote -v | grep -m1 '^origin' | sed -Ene's#.*git@([^[:space:]]*).*#\1#p'`
-	    if [ -z "$REPO_URL" ]; then
-	        echo "ERROR:    Could not identify Repo url."
-	        exit
-	    fi
+		if [ -z "$REPO_URL" ]; then
+			echo "ERROR:    Could not identify Repo url."
+			exit
+		fi
 
-	    USER=`echo $REPO_URL | sed -Ene's#github.com[:/]([^/]*)/(.*)#\1#p'`
-	    if [ -z "$USER" ]; then
-	        echo "ERROR:    Could not identify User."
-	        exit
-	    fi
+		USER=`echo $REPO_URL | sed -Ene's#github.com[:/]([^/]*)/(.*)#\1#p'`
+		if [ -z "$USER" ]; then
+			echo "ERROR:    Could not identify User."
+			exit
+		fi
 
-	    REPO=`echo $REPO_URL | sed -Ene's#github.com[:/]([^/]*)/(.*)#\2#p'`
-	    if [ -z "$REPO" ]; then
-	        echo "ERROR:    Could not identify Repo."
-	        exit
-	    fi
+		REPO=`echo $REPO_URL | sed -Ene's#github.com[:/]([^/]*)/(.*)#\2#p'`
+		if [ -z "$REPO" ]; then
+			echo "ERROR:    Could not identify Repo."
+			exit
+		fi
 
 		key_fingerprint=$(git config --list --local | grep remote.origin.gcrypt-participants | head -n 1 | sed -n -e 's/^.*=//p')
 		if [ -z "${key_fingerprint}" ]; then
@@ -140,7 +140,7 @@ if [[ "${prompt}" == "Y" ]]; then
 			git commit --allow-empty -am 'root commit'
 			git config remote.origin.gcrypt-participants "${key_fingerprint}"
 			git config --global user.signingkey "${key_fingerprint}"
-	    	git remote set-url origin "gcrypt::git@github.com:${USER}/${REPO}"
+			git remote set-url origin "gcrypt::git@github.com:${USER}/${REPO}"
 			git push origin main
 			cd ../
 			rm -rf ${REPO}

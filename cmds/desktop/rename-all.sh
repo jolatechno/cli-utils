@@ -1,0 +1,88 @@
+#!/bin/bash
+
+License="MIT License
+
+Copyright (c) 2024 joseph touzet
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the \"Software\"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"
+
+print_usage() {
+	printf "$License
+
+Usage: \"rename-all -b/e -r/f [patern to replace] [patern to replace with]\" 
+	-h help
+
+	-r recursive (not yet supported)
+	-b add patern to begin of file name
+	-e add patern to end of file name
+	-R replace following patern with the given patern
+	-f patern to find to add the patern, without replacing it
+	-E replace with empty patern
+"
+}
+
+recursive=false
+place=
+to_replace=
+to_find=
+empty=false
+
+while getopts 'hbeR:f:E' flag; do
+	case "${flag}" in
+		h) print_usage;
+			exit 1;;
+    	r) recursive=true;;
+		b) if [ "${place}" = "end" ] || [ ! -z "${to_find}" ] || [ ! -z "${to_replace}" ]; then
+			>&2 echo "Can't add to end (-e), replace (-R), or find (-f) AND begin (-b) !"
+			exit 1
+		fi
+		place=begin;;
+		e) if [ "${place}" = "begin" ] || [ ! -z "${to_find}" ] || [ ! -z "${to_replace}" ]; then
+			>&2 echo "Can't add to begin (-b), replace (-R), or find (-f) AND end (-e) !"
+			exit 1
+		fi
+		place=end;;
+		R) if [ "${place}" = "end" ] || [ "${place}" = "begin" ] || [ ! -z "${to_find}" ]; then
+			>&2 echo "Can't add to begin (-b), end (-e), or find (-f) AND replace (-R) !!"
+			exit 1
+		fi
+		to_replace="${OPTARG}";;
+		f) if [ "${place}" = "end" ] || [ "${place}" = "begin" ] || [ ! -z "${to_replace}" ]; then
+			>&2 echo "Can't add to begin (-b), end (-e), or replace (-R) AND find (-f) !!"
+			exit 1
+		fi
+		to_find="${OPTARG}";;
+		E) empty=true;;
+		*) print_usage;
+			exit 1 ;;
+	esac
+done
+
+to_add=
+if [ "${empty}" = false ]; then
+	to_add="${@: -1}"
+fi
+
+if [ -z "${to_add}" ] && [ "${empty}" = false ]; then
+	>&2 echo "No patern to replace with/add given !"
+	exit 1
+fi
+
+echo "${place} ${to_replace}/${to_find} ${to_add}"
