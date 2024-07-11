@@ -26,9 +26,12 @@ SOFTWARE.
 print_usage() {
 	printf "$License
 
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
 WARNING: Only works with Github (for now)
 
 Delete all comit history from the main branch of a repo.
+
 
 Usage: \"gcrypt-set-repo\"
 	-h help

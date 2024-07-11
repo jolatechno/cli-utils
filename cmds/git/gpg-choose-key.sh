@@ -26,7 +26,10 @@ SOFTWARE.
 print_usage() {
 	>&2 printf "$License
 
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
 Give choise to user of GPG key, and return (print to stdout) properly formated public key. Is usefull for other commands.
+
 
 Usage: \"choose-gpg-key\"
 	-h help

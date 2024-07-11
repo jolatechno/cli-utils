@@ -25,6 +25,12 @@ SOFTWARE.
 
 print_usage() {
   printf "$License
+
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
+Used to give a small git cheat-sheet.
+
+
 Usage: \"gitcheat -v/t\"
     -h help
 

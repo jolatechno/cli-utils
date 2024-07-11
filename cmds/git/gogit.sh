@@ -26,7 +26,10 @@ SOFTWARE.
 print_usage() {
 	printf "$License
 
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
 Gets the go version of a directory used as a go package.
+
 
 Usage: \"gogit\"
 	-h help

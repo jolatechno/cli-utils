@@ -26,6 +26,11 @@ SOFTWARE.
 print_usage() {
 	printf "$License
 
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
+Renames all files/directories according to some paterns and parameters.
+
+
 Usage: \"rename-all -b/e -r/f [patern to replace] [patern to replace with]\" 
 	-h help
 

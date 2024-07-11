@@ -26,7 +26,10 @@ SOFTWARE.
 print_usage() {
 		printf "$License
 
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
 Clones recursively all submodules.
+
 
 Usage: \"gitdown ...\"
 	-h help

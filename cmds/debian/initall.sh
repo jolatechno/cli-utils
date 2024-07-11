@@ -26,7 +26,10 @@ SOFTWARE.
 print_usage() {
 	printf "$License
 
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
 Installs all .deb or .AppImage the commands find.
+
 
 Usage: \"sudo initall directory1 directory2 ...\"
 	-h help

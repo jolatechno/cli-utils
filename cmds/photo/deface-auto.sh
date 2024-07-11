@@ -26,6 +26,11 @@ SOFTWARE.
 print_usage() {
 	printf "$License
 
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
+Automatically blurs faces in all image files here.
+
+
 Usage: \"compress-all-jpg\"
 	-h help
 "

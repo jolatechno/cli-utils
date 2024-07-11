@@ -26,6 +26,11 @@ SOFTWARE.
 print_usage() {
 	printf "$License
 
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
+Compresses all pdfs.
+
+
 Usage: \"compress-all-pdfs\"
 	-h help
 

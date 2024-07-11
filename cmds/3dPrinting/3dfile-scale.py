@@ -29,7 +29,15 @@ import os
 
 def print_usage():
     print(License)
-    print("Usage: \"sudo param axis (char, 'X', 'Y' or 'Z'), scaling_factor (float), base_height (float), offset (float)\"\n\t-h help")
+    print("""
+
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
+Scales a Gcode file. use \"param\" to set the scaling.
+
+
+Usage: \"3dfile-scale-setparam file1 file2 ...\"
+    -h help""")
     sys.exit()
 
 if len(sys.argv) == 1:
@@ -38,26 +46,34 @@ if len(sys.argv) == 1:
 if sys.argv[1] == "-h":
     print_usage()
 
-if not os.getuid() == 0:
-    print("root privilege needed...")
-    sys.exit()
-
+List = '1234567890.'
 file_name = '/etc/git-cli-utils/3dPrinting/params.json'
 
 with open(file_name, 'r') as infile:
     data = json.load(infile)
 
-assert sys.argv[1] in ["X", "Y", "Z"], "axis not understood"
-data['axis'] = sys.argv[1]
+    axis = data['axis']
+    scaling_factor = data['scaling_factor']
+    base_height = data['base_height']
+    offset = data['offset']
 
-if len(sys.argv) > 2:
-	data['scaling_factor'] = float(sys.argv[2])
+for name in sys.argv[1:]:
+    lines = open(name, 'r').readlines()
 
-if len(sys.argv) > 3:
-	data['base_height'] = float(sys.argv[3])
+    with open(name, 'w') as in_file:
+        for line in lines:
+            if line[:3] in ['G0 ', 'G1 '] and axis in line:
 
-if len(sys.argv) > 4:
-	data['offset'] = float(sys.argv[4])
+                i = line.index(axis) + 1
+                number, new_line = '', line[:i]
 
-with open(file_name, 'w') as outfile:
-    json.dump(data, outfile)
+                while line[i] in List:
+                    number += line[i]
+                    i += 1
+
+                new_number = (float(number) + offset)*scaling_factor - base_height*(scaling_factor - 1)
+                new_line += '%.3f'%(new_number) + line[i:]
+
+                in_file.write(new_line)
+            else:
+                in_file.write(line)

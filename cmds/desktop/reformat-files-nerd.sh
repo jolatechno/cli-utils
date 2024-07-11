@@ -26,6 +26,11 @@ SOFTWARE.
 print_usage() {
 	printf "$License
 
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
+Reformats all file names to avoid uppercase, special character, and replaces any length of spaces to a single underscore.
+
+
 Usage: \"reformat-files-nerd\"
 	-h help
 "

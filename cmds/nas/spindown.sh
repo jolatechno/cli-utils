@@ -25,6 +25,12 @@ SOFTWARE.
 
 print_usage() {
 	printf "$License
+
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
+Adds a spindown timer to a hard drive.
+
+
 Usage: \"sudo spindown -d drive_device_name -t time\"
 	-h help
 

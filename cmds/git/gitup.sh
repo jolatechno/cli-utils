@@ -26,10 +26,13 @@ SOFTWARE.
 print_usage() {
 	printf "$License
 
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
 Equivalent to \"git add . ; git commit -am 'update' ; git push -f origin 'branch'\"
 
 If \"stagecommit.maxfilesize\" is set in git config, will fallback to
 \"git-stage-commit\" to respect this set limit.
+
 
 Usage: \"gitup\"
 	-h help

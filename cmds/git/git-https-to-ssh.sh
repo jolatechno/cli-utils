@@ -3,12 +3,14 @@
 #code at https://gist.github.com/m14t/3056747
 
 print_usage() {
-	printf "code by Matt Farmer https://gist.github.com/m14t
-code at https://gist.github.com/m14t/3056747
+	printf "Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
+Code by Matt Farmer [https://gist.github.com/m14tode] found at [https://gist.github.com/m14t/3056747]
 
 WARNING: Only works with Github (for now)
 
-this command will set the git origin from https to ssh.
+This command will set the git origin from https to ssh.
+
 
 Usage: \"git-https-to-shh\":
 	-h help

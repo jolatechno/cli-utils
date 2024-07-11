@@ -25,6 +25,12 @@ SOFTWARE.
 
 print_usage() {
 	printf "$License
+
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
+Deletes a samba share.
+
+
 Usage: \"sudo smbdel share_name1 share_name2 ...\"
 	-h help
 "

@@ -28,6 +28,9 @@ print_usage() {
 
 Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
 
+Used to update this package.
+
+
 Usage: \"sudo cmdsup\"
 	-h help
 "

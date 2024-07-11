@@ -26,9 +26,12 @@ SOFTWARE.
 print_usage() {
 	printf "$License
 
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
 Stage commits so that not too many files are added at once.
 
 It is usefull for \"git-remote-gcrypt\" so that the encrypted commit doesn't exceed the max commit size.
+
 
 Usage: \"git-stage-commit\"
 	-h help

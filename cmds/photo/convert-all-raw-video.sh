@@ -26,6 +26,11 @@ SOFTWARE.
 print_usage() {
 	printf "$License
 
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
+Converts all raw videos to mp4.
+
+
 Usage: \"convert-all-raw\"
 	-h help
 

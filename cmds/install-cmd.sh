@@ -26,7 +26,10 @@ SOFTWARE.
 print_usage() {
 	printf "$License
 
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
 installs all commands as exectuables to /bin/ and removes the extension.
+
 
 Usage: \"sudo install-cmd cmd1.sh cmd2.py ...\"
 	-h help

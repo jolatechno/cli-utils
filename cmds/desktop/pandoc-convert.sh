@@ -26,7 +26,10 @@ SOFTWARE.
 print_usage() {
 	printf "$License
 
-Can convert .ipynb, .html, .md, and a lot of file type to some other file types
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
+Can convert .ipynb, .html, .md, and a lot of file type to some other file types.
+
 
 Usage: \"pandoc-convert -p -o file1 file2 ...\"
 	-h help

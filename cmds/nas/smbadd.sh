@@ -25,6 +25,12 @@ SOFTWARE.
 
 print_usage() {
 	printf "$License
+
+Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
+
+Used to add a samba share.
+
+
 Usage: \"sudo smbadd -n share_name -f share_path -u share_allowed_user\"
 	-h help
 
