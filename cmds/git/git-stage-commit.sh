@@ -131,12 +131,17 @@ else
 
 			IFS=$' \t' read _ _ _ this_file_size _ <<< $(git ls-tree -r -l HEAD "${file}")
 			this_file_size=$(echo $this_file_size | tr -d ' ')
-			if [[ ! $this_file_size =~ ^[0-9] ]] || [ -z "${this_file_size}" ]; then
-				this_file_size=$(du -sh --block-size=K "${file}" | awk -F"K" '{print $1}')
-				size_from="du"
+			if [ -d "${file}" ]; then
+				this_file_size=0
+				size_from="0 size, either symlink of git submodule"
 			else
-				this_file_size=$(( ${this_file_size}/1000 ))
-				size_from="git"
+				if [[ ! $this_file_size =~ ^[0-9] ]] || [ -z "${this_file_size}" ]; then
+					this_file_size=$(du -sh --block-size=K "${file}" | awk -F"K" '{print $1}')
+					size_from="size from du"
+				else
+					this_file_size=$(( ${this_file_size}/1000 ))
+					size_from="size from git"
+				fi
 			fi
 
 			if [ "${num_added}" = 0 ] || (( ${added_file_size} + ${this_file_size} < ${max_file_size}*1000 )); then
@@ -146,7 +151,7 @@ else
 				num_added=$((${num_added} + 1 ))
 
 				if [ "${verbose}" = true ]; then
-					echo "adding '${file}' ${this_file_size}Kb (size from ${size_from})"
+					echo "adding '${file}' ${this_file_size}Kb (${size_from})"
 				fi
 			fi
 		done
