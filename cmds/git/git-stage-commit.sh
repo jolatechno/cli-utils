@@ -101,76 +101,71 @@ if (( $max_file_size <= 0 )); then
 	git push -f origin ${branch}
 else
 	idx=0
-	added_file_size=0
 
-	to_add_dif=$(git diff --name-only)
-	to_add_new=$(git ls-files --others --exclude-standard)
+	while true; do
+		added_file_size=0
+		num_added=0
 
-	to_add=$to_add_dif
-	if [ ! -z "${to_add}" ] && [ ! -z "${to_add_new}" ]; then
-		to_add+="$IFS"
-	fi
-	to_add+=$to_add_new
+		to_add_dif=$(git diff --name-only)
+		to_add_new=$(git ls-files --others --exclude-standard)
 
-	for unformated_file in $to_add; do
-		file=$(printf "${unformated_file}\n")
+		to_add=$to_add_dif
+		if [ ! -z "${to_add}" ] && [ ! -z "${to_add_new}" ]; then
+			to_add+="$IFS"
+		fi
+		to_add+=$to_add_new
 
-		if [ ! -f "${file}" ] && [ ! -d "${file}" ]; then
-			if [ "${verbose}" = true ]; then
-				echo "'${file}' not found (probably deleted), skipping"
-			fi
-			continue
+		if [ -z "${to_add}" ]; then
+			break
 		fi
 
-		IFS=$' \t' read _ _ _ this_file_size _ <<< $(git ls-tree -r -l HEAD "${file}")
-		this_file_size=$(echo $this_file_size | tr -d ' ')
-		if [[ ! $this_file_size =~ ^[0-9] ]] || [ -z "${this_file_size}" ]; then
-			this_file_size=$(du -sh --block-size=K "${file}" | awk -F"K" '{print $1}')
-			if [ "${verbose}" = true ]; then
-				echo "adding '${file}' ${this_file_size}Kb (size from du)"
-			fi
-		else
-			this_file_size=$(( ${this_file_size}/1000 ))
-			if [ "${verbose}" = true ]; then
-				echo "adding '${file}' ${this_file_size}Kb (size from git)"
-			fi
-		fi
+		for unformated_file in $to_add; do
+			file=$(printf "${unformated_file}\n")
 
-		if (( ${added_file_size} + ${this_file_size} > ${max_file_size}*1000 )); then
-			if [ "${added_file_size}" = 0 ]; then
-				git add "${file}"
+			if [ ! -f "${file}" ] && [ ! -d "${file}" ]; then
+				if [ "${verbose}" = true ]; then
+					echo "'${file}' not found (probably deleted), skipping"
+				fi
+				continue
 			fi
 
-			echo -e "\ncommited $(( ${added_file_size}/1000 ))M to '${commit_name}_${idx}'"
-			git commit -m "${commit_name}_${idx}"
-			if [ "${push_each}" = true ]; then
-				echo -e "\nPushing directly...\n"
-				git push -f origin ${branch}
+			IFS=$' \t' read _ _ _ this_file_size _ <<< $(git ls-tree -r -l HEAD "${file}")
+			this_file_size=$(echo $this_file_size | tr -d ' ')
+			if [[ ! $this_file_size =~ ^[0-9] ]] || [ -z "${this_file_size}" ]; then
+				this_file_size=$(du -sh --block-size=K "${file}" | awk -F"K" '{print $1}')
+				size_from="du"
 			else
-				echo ""
+				this_file_size=$(( ${this_file_size}/1000 ))
+				size_from="git"
 			fi
-			idx=$(($idx + 1))
 
-			if ! [ "${added_file_size}" == 0 ]; then
+			if [ "${num_added}" = 0 ] || (( ${added_file_size} + ${this_file_size} < ${max_file_size}*1000 )); then
 				git add "${file}"
-				added_file_size=$this_file_size
-			else
-				added_file_size=0
-			fi
-		else
-			git add "${file}"
-			added_file_size=$(($added_file_size + $this_file_size))
-		fi
-	done
 
-	if ! [ "${added_file_size}" == 0 ]; then
-		echo -e "\ncommited $(( ${added_file_size}/1000 ))M to '${commit_name}_${idx}'\n"
-		git commit -am "${commit_name}_${idx}"
+				added_file_size=$((${added_file_size} + ${this_file_size}))
+				num_added=$((${num_added} + 1 ))
+
+				if [ "${verbose}" = true ]; then
+					echo "adding '${file}' ${this_file_size}Kb (size from ${size_from})"
+				fi
+			fi
+		done
+
+		if [ "${num_added}" = 0 ]; then
+			break
+		fi
+
+		echo -e "\ncommited ${num_added} files, $(( ${added_file_size}/1000 ))M to '${commit_name}_${idx}'"
+		git commit -m "${commit_name}_${idx}"
+
 		if [ "${push_each}" = true ]; then
 			echo -e "\nPushing directly...\n"
 			git push -f origin ${branch}
 		fi
-	fi
+		echo ""
+
+		idx=$((${idx} + 1))
+	done
 
 	if ! [ "${push_each}" = true ]; then
 		echo -e "\nPushing at the end...\n"
