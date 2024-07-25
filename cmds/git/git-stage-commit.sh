@@ -102,6 +102,8 @@ if (( $max_file_size <= 0 )); then
 else
 	idx=0
 
+	OIFS="$IFS"
+	IFS=$'\n'
 	while true; do
 		added_file_size=0
 		num_added=0
@@ -120,7 +122,7 @@ else
 		fi
 
 		for unformated_file in $to_add; do
-			file=$(printf "${unformated_file}\n")
+			file=$(printf "${unformated_file}")
 
 			if [ ! -f "${file}" ] && [ ! -d "${file}" ]; then
 				git add "${file}"
@@ -174,6 +176,7 @@ else
 
 		idx=$((${idx} + 1))
 	done
+	IFS="$OIFS"
 
 	if ! [ "${push_each}" = true ]; then
 		echo -e "\nPushing at the end...\n"

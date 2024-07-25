@@ -92,6 +92,8 @@ if ! command -v pandoc &> /dev/null; then
     fi
 fi
 
+OIFS="$IFS"
+IFS=$'\n'
 for file in $@; do
 	if [[ ! " $exlude_files " =~ .*\ $file\ .* ]]; then
 		base_file_name=$(basename "${file%.*}")
@@ -103,3 +105,4 @@ for file in $@; do
 		done
 	fi
 done
+IFS="$OIFS"
