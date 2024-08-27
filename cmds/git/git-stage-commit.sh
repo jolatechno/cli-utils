@@ -130,7 +130,7 @@ else
 				num_added=$((${num_added} + 1 ))
 
 				if [ "${verbose}" = true ]; then
-					echo "'${file}' deleted"
+					echo "'${file}' deleted or moved"
 				fi
 			else
 				IFS=$' \t' read _ _ _ this_file_size _ <<< $(git ls-tree -r -l HEAD "${file}")
