@@ -40,16 +40,6 @@ Usage: "sudo install-cmd cmd1.sh cmd2.py ..."
 ## 3dPrinting
 
 
-### _3dfile-scale_
-
-```bash
-Scales a Gcode file. use "param" to set the scaling.
-
-
-Usage: "3dfile-scale-setparam file1 file2 ..."
-    -h help
-```
-
 ### _3dfile-scale-setparam_
 
 ```bash
@@ -57,6 +47,16 @@ Sets the scaling for "3dfile-scale".
 
 
 Usage: "sudo 3dfile-scale-setparam axis (char, 'X', 'Y' or 'Z'), scaling_factor (float), base_height (float), offset (float)"
+    -h help
+```
+
+### _3dfile-scale_
+
+```bash
+Scales a Gcode file. use "param" to set the scaling.
+
+
+Usage: "3dfile-scale-setparam file1 file2 ..."
     -h help
 ```
 
@@ -216,6 +216,81 @@ Gets the go version of a directory used as a go package.
 
 Usage: "gogit"
 	-h help
+```
+
+### _git-stage-commit_
+
+```bash
+Stage commits so that not too many files are added at once.
+
+It is usefull for "git-remote-gcrypt" so that the encrypted commit doesn't exceed the max commit size.
+
+
+Usage: "git-stage-commit"
+	-h help
+	-v verbose
+
+	-s max added file size [Mb], default is 25Mb (half of Github recommandation of 50Mb).
+		If negative, will fallback to gitup.
+	-m commit name, default is 'update'
+	-b set branch name, default is whatever beanch you are on
+	-p push only at the end (default behaviour is to push at each commit)
+```
+
+### _gpg-choose-key_
+
+```bash
+Give choise to user of GPG key, and return (print to stdout) properly formated public key. Is usefull for other commands.
+
+
+Usage: "choose-gpg-key"
+	-h help
+
+	-k key name to first try without user input
+	-n number of try (default is 3)
+	-y continue for the first try if a key is found.
+		ATTENTION: is pretty unsafe because you may have found the wrong key.
+```
+
+### _gcrypt-set-repo_
+
+```bash
+WARNING: Only works with Github (for now)
+
+Delete all comit history from the main branch of a repo.
+
+
+Usage: "gcrypt-set-repo"
+	-h help
+
+	-u this flag to change remote url
+	-k this flag to set gpg key
+	-v this flag to set git environment variables
+```
+
+### _git-redownload-submodules_
+
+```bash
+TODO
+
+
+Usage: "git-redownload-submodules"
+	-h help
+
+	-Y redownload all submodules without asking, !! DANGEROUS !!
+```
+
+### _git-list-submodules_
+
+```bash
+List all submodules in the current repo.
+
+
+Usage: "git-list-submodules"
+	-h help
+
+	-p print path
+	-u print url
 ```
 
 ## nas

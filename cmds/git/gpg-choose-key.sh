@@ -24,7 +24,7 @@ SOFTWARE.
 "
 
 print_usage() {
-	>&2 printf "$License
+	printf "$License
 
 Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
 
@@ -37,7 +37,7 @@ Usage: \"choose-gpg-key\"
 	-k key name to first try without user input
 	-n number of try (default is 3)
 	-y continue for the first try if a key is found.
-		ATTENTION: is pretty unsafe because ypu may have found the wrong key.
+		ATTENTION: is pretty unsafe because you may have found the wrong key.
 "
 
 exit 1
