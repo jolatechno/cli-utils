@@ -41,13 +41,16 @@ Usage: \"git-list-submodules\"
 
 path=false
 url=false
+git=false
 
-while getopts 'hpu' flag; do
+while getopts 'hpugb' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
 	p) path=true;;
 	u) url=true;;
+	g) pull=true;:
+	b) branch=
 	esac
 done
 

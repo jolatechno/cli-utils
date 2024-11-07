@@ -93,6 +93,20 @@ if [ "${branch}" = None ]; then
 	branch=$(git rev-parse --abbrev-ref HEAD)
 fi
 
+git_root=$(git rev-parse --show-toplevel)
+if [ -f "${git_root}/.gitmodules" ]; then
+	git add "${git_root}/.gitmodules"
+	submodules_path=$(git config --file "${git_root}/.gitmodules" --get-regexp path | awk '{ print $2 }')
+	submodules_urls=$(git config --file "${git_root}/.gitmodules" --get-regexp url | awk '{ print $2 }')
+
+	for i in "${!submodules_path[@]}"; do 
+		git submodule add -f ${submodules_urls[$i]} "${git_root}/${submodules_path[$i]}"
+		if [ "${verbose}" = true ]; then
+			echo "adding submodule \"${submodules_urls[$i]}\" at path \"${submodules_path[$i]}\""
+		fi
+	done
+fi
+
 if (( $max_file_size <= 0 )); then
 	echo -e "Falling back to 'gitup'.. \n"
 

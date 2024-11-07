@@ -153,6 +153,9 @@ if [[ "${prompt}" == "Y" ]]; then
 	git checkout --orphan temp_branch
 	git rm --cached -rf .
 	git branch -D ${branch} && git branch -m ${branch}
+	if [ -f ".gitignore"  ]; then
+		git add ".gitignore"
+	fi
 	git commit --allow-empty -am 'root commit'
 	git-stage-commit -s ${max_file_size} -m ${commit_name} -b ${branch} ${git_params} ${stage_commit_args}
 else

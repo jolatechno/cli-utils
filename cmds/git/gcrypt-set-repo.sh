@@ -39,20 +39,26 @@ Usage: \"gcrypt-set-repo\"
 	-u this flag to change remote url
 	-k this flag to set gpg key
 	-v this flag to set git environment variables
+	-p this flag to pull after the changes (if you pulled the directory as a normal, unencrypted directory)
+	-b sets the branch for the \"git pull\" called by the flag \"-p\" (default: \"main\") 
 "
 }
 
 set_url=false
 set_gpg_key=false
 set_variables=false
+pull=false
+branch="main"
 
-while getopts 'hukv' flag; do
+while getopts 'hukvpb' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
 	u) set_url=true;;
 	k) set_gpg_key=true;;
 	v) set_variables=true;;
+	p) pull=true;;
+	b) branch="${OPTARG}";;
 	*) print_usage;
 		exit 1 ;;
 	esac
@@ -127,6 +133,11 @@ if [[ $prompt == "Y" ]]; then
 		read -p 'Max commit size [Mb] (recommanded: 25-75): ' max_file_size
 
 		git config --local stagecommit.maxfilesize ${max_file_size}
+	fi
+
+	if [ "${pull}" = true ]; then
+		git pull origin "${branch}"
+		git checkout "${branch}"
 	fi
 else
 	exit 0
