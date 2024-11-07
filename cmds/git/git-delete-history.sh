@@ -101,6 +101,7 @@ if ! [ -z "${max_file_size_config}" ] 2> /dev/null && [ "${max_file_size_default
 	max_file_size=${max_file_size_config} 
 fi
 
+git_root=$(git rev-parse --show-toplevel)
 echo "WARNING: Some part may only works with Github (for now) !"
 read -p "Are you sure you want to continue? [Y|n] " prompt
 if [[ "${prompt}" == "Y" ]]; then
@@ -153,8 +154,8 @@ if [[ "${prompt}" == "Y" ]]; then
 	git checkout --orphan temp_branch
 	git rm --cached -rf .
 	git branch -D ${branch} && git branch -m ${branch}
-	if [ -f ".gitignore"  ]; then
-		git add ".gitignore"
+	if [ -f "${git_root}/.gitignore"  ]; then
+		git add "${git_root}/.gitignore"
 	fi
 	git commit --allow-empty -am 'root commit'
 	git-stage-commit -s ${max_file_size} -m ${commit_name} -b ${branch} ${git_params} ${stage_commit_args}

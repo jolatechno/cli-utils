@@ -57,10 +57,10 @@ if [ "${path}" = true ]; then
 	readarray -t list <<< $(git config --file "${git_root}/.gitmodules" --get-regexp path | awk '{ print $2 }')
 fi
 if [ "${url}" = true ]; then
-	readarray -t urls <<< $(git config --file "${git_root}/.gitmodules" --get-regexp url | awk '{ print $2 }')
 	if [ -z "${list}" ]; then
-		list=$urls
+		readarray -t list <<< $(git config --file "${git_root}/.gitmodules" --get-regexp url | awk '{ print $2 }')
 	else
+		readarray -t urls <<< $(git config --file "${git_root}/.gitmodules" --get-regexp url | awk '{ print $2 }')
 		for i in `seq 0 $(( ${#urls[@]} - 1 ))`; do
 			list[$i]="${list[$i]} ${urls[$i]}"
 		done

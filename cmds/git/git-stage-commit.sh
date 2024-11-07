@@ -96,8 +96,8 @@ fi
 git_root=$(git rev-parse --show-toplevel)
 if [ -f "${git_root}/.gitmodules" ]; then
 	git add "${git_root}/.gitmodules"
-	submodules_path=$(git config --file "${git_root}/.gitmodules" --get-regexp path | awk '{ print $2 }')
-	submodules_urls=$(git config --file "${git_root}/.gitmodules" --get-regexp url | awk '{ print $2 }')
+	submodules_path=$(git-list-submodules -p)
+	submodules_urls=$(git-list-submodules -u)
 
 	for i in "${!submodules_path[@]}"; do 
 		git submodule add -f ${submodules_urls[$i]} "${git_root}/${submodules_path[$i]}"
