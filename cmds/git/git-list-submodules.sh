@@ -41,27 +41,25 @@ Usage: \"git-list-submodules\"
 
 path=false
 url=false
-git=false
 
-while getopts 'hpugb' flag; do
+while getopts 'hpu' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
 	p) path=true;;
 	u) url=true;;
-	g) pull=true;:
-	b) branch=
 	esac
 done
 
+git_root=$(git rev-parse --show-toplevel)
 list=
 if [ "${path}" = true ]; then
-	readarray -t list <<< $(git config --file .gitmodules --get-regexp path | awk '{ print $2 }')
+	readarray -t list <<< $(git config --file "${git_root}/.gitmodules" --get-regexp path | awk '{ print $2 }')
 fi
 if [ "${url}" = true ]; then
-	readarray -t urls <<< $(git config --file .gitmodules --get-regexp url | awk '{ print $2 }')
+	readarray -t urls <<< $(git config --file "${git_root}/.gitmodules" --get-regexp url | awk '{ print $2 }')
 	if [ -z "${list}" ]; then
-		list="${urls[@]}"
+		list=$urls
 	else
 		for i in `seq 0 $(( ${#urls[@]} - 1 ))`; do
 			list[$i]="${list[$i]} ${urls[$i]}"
