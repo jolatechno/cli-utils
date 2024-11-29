@@ -34,33 +34,59 @@ TODO
 Usage: \"git-redownload-submodules\"
 	-h help
 
+	-r redownload recursively
 	-Y redownload all submodules without asking, !! DANGEROUS !!
 "
 }
 
 ask=true
+recursive=false
 
-while getopts 'hY' flag; do
+while getopts 'hrY' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
+	r) recursive=true;;
 	Y) ask=false;;
 	esac
 done
 
-readarray -t submodules <<< $(git-list-submodules -pu)
+redownload() {
+	readarray -t submodules <<< $(git-list-submodules -pu)
 
-IFS=$'\n'
-for i in `seq 0 $(( ${#submodules[@]} - 1 ))`; do
-	readarray -d ' ' -t path_url <<< "${submodules[$i]}"
-	path=${path_url[0]}
-	url=${path_url[1]}
-	url=${url%$'\n'}
+	IFS=$'\n'
+	for i in `seq 0 $(( ${#submodules[@]} - 1 ))`; do
+		readarray -d ' ' -t path_url <<< "${submodules[$i]}"
+		path=${path_url[0]}
+		url=${path_url[1]}
+		url=${url%$'\n'}
 
-	read -p "Redownload \"${url}\" ro \"${path}\" ? [Y|n] " prompt
-	if [[ "${prompt}" == "Y" ]]; then
-		rm -r ${path}
-		git rm --cached -r ${path}
-		git submodule add -f ${url} ${path}
-	fi
-done
+		if [ -z "${path}" ] || [ -z "${url}" ]; then
+			continue
+		fi
+
+		prompt="Y"
+		if [ "${ask}" = true ]; then
+			read -p "Redownload \"${url}\" to \"${path}\" ? [Y|n] " prompt
+		fi
+
+		if [[ "${prompt}" == "Y" ]]; then
+			if [ -d ${path} ]; then
+				rm -r ${path}
+			else
+				dir=$(dirname ${path})
+				if [ ! -d "${dir}" ]; then
+					mkdir -p ${dir}
+				fi
+			fi
+			git rm --cached -r ${path}
+			git submodule add -f ${url} ${path}
+
+			if [ "${recursive}" = true ]; then
+				(cd ${path} && redownload)
+			fi
+		fi
+	done
+}
+
+redownload
