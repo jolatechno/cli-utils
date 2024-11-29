@@ -51,6 +51,22 @@ while getopts 'hpu' flag; do
 	esac
 done
 
+if ! command -v git &> /dev/null; then
+	read -p "git not found, install ? [Y|n] " prompt
+	if [[ $prompt == "Y" ]]; then
+		if command -v pacman &> /dev/null; then
+			sudo pacman -Sy git
+		elif command -v apt-get &> /dev/null; then
+			sudo apt-get install git
+		else
+			echo "Installing command not found, try to install yourself."
+			exit 1
+		fi
+	else
+		exit 0
+	fi
+fi
+
 git_root=$(git rev-parse --show-toplevel)
 list=
 if [ "${path}" = true ]; then

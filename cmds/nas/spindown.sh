@@ -62,9 +62,9 @@ if ! command -v hdparm &> /dev/null; then
 	read -p "hdparm not found, install ? [Y|n] " prompt
 	if [[ $prompt == "Y" ]]; then
 		if command -v pacman &> /dev/null; then
-			pacman -Sy hdparm
+			sudo pacman -Sy hdparm
 		elif command -v apt-get &> /dev/null; then
-			apt-get install hdparm
+			sudo apt-get install hdparm
 		else
 			echo "Installing command not found, try to install yourself."
 			exit 1

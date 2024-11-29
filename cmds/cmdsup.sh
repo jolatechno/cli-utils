@@ -50,6 +50,22 @@ if [ "$EUID" -ne 0 ]; then
 	exit
 fi
 
+if ! command -v git &> /dev/null; then
+	read -p "git not found, install ? [Y|n] " prompt
+	if [[ $prompt == "Y" ]]; then
+		if command -v pacman &> /dev/null; then
+			sudo pacman -Sy git
+		elif command -v apt-get &> /dev/null; then
+			sudo apt-get install git
+		else
+			echo "Installing command not found, try to install yourself."
+			exit 1
+		fi
+	else
+		exit 0
+	fi
+fi
+
 git clone https://github.com/jolatechno/cli-utils.git /tmp/cli-utils && echo "" && \
 ((cd /tmp/cli-utils && \
 make update ); \

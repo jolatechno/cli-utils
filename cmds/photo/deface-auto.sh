@@ -48,7 +48,7 @@ done
 if ! command -v deface &> /dev/null; then
 	read -p "deface not found, install ? [Y|n] " prompt
 	if [[ $prompt == "Y" ]]; then
-		python3 -m pip install deface
+		sudo python3 -m pip install --break-system-packages deface
 	else
 		exit 0
 	fi
