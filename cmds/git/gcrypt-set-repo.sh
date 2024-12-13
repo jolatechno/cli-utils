@@ -28,7 +28,7 @@ print_usage() {
 
 Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
 
-WARNING: Only works with Github (for now)
+WARNING: Only tested with Github
 
 Delete all comit history from the main branch of a repo.
 
@@ -80,7 +80,7 @@ if ! command -v git &> /dev/null; then
 	fi
 fi
 
-echo "WARNING: Some part may only works with Github (for now) !"
+echo "WARNING: Only tested with github (for now)"
 read -p "Are you sure you want to continue? [Y|n] " prompt
 if [[ $prompt == "Y" ]]; then
 	if [ "${set_url}" = true ]; then
@@ -97,23 +97,29 @@ if [[ $prompt == "Y" ]]; then
 		fi
 
 		if [ "${continue_}" = true ]; then
-			USER=`echo $REPO_URL | sed -Ene's#github.com[:/]([^/]*)/(.*).git#\1#p'`
-			if [ -z "$USER" ]; then
-				>&2 echo "ERROR:    Could not identify User. Not changing the URL."
+			GIT_PROVIER=`echo $REPO_URL | sed -Ene's#([^\:]*)[:/][^/]*/(.*).git#\1#p'`
+			if [ -z "$GIT_PROVIER" ]; then
+				>&2 echo "ERROR:    Could not identify git provider. Not changing the URL."
 			else
 
-				REPO=`echo $REPO_URL | sed -Ene's#github.com[:/]([^/]*)/(.*).git#\2#p'`
-				if [ -z "$REPO" ]; then
-					>&2 echo "ERROR:    Could not identify Repo. Not changing the URL."
+				USER=`echo $REPO_URL | sed -Ene's#[^\:]*[:/]([^/]*)/(.*).git#\1#p'
+				if [ -z "$USER" ]; then
+					>&2 echo "ERROR:    Could not identify User. Not changing the URL."
 				else
 
-					NEW_URL="gcrypt::git@github.com:${USER}/${REPO}"
-					echo "Changing repo url from "
-					echo "'$REPO_URL'"
-					echo "        to "
-					echo "'$NEW_URL'"
+					REPO=`echo $REPO_URL | sed -Ene's#[^\:]*[:/]([^/]*)/(.*).git#\2#p'`
+					if [ -z "$REPO" ]; then
+						>&2 echo "ERROR:    Could not identify Repo. Not changing the URL."
+					else
 
-					git remote set-url origin $NEW_URL
+						NEW_URL="gcrypt::git@${GIT_PROVIER}:${USER}/${REPO}"
+						echo "Changing repo url from "
+						echo "'$REPO_URL'"
+						echo "        to "
+						echo "'$NEW_URL'"
+
+						git remote set-url origin $NEW_URL
+					fi
 				fi
 			fi
 		fi

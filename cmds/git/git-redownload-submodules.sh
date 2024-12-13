@@ -28,7 +28,7 @@ print_usage() {
 
 Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
 
-TODO
+Redownload all submodules from scratch (WARNING : will loose untracked files)
 
 
 Usage: \"git-redownload-submodules\"

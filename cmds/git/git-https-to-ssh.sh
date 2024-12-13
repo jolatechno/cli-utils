@@ -7,7 +7,7 @@ print_usage() {
 
 Code by Matt Farmer [https://gist.github.com/m14tode] found at [https://gist.github.com/m14t/3056747]
 
-WARNING: Only works with Github (for now)
+WARNING: Only tested with Github
 
 This command will set the git origin from https to ssh.
 
@@ -41,33 +41,40 @@ if ! command -v git &> /dev/null; then
 		exit 0
 	fi
 fi
+#!/bin/bash
 
-echo "WARNING: Some part may only works with Github (for now) !"
+echo "WARNING: Only tested with github (for now)"
 read -p "Are you sure you want to continue? [Y|n] " prompt
 if [[ $prompt == "Y" ]]; then
 
 	#-- Script to automate https://help.github.com/articles/why-is-git-always-asking-for-my-password
 
-	REPO_URL=`git remote -v | grep -m1 '^origin' | sed -Ene's#.*(https://[^[:space:]]*).*#\1#p'`
+	REPO_URL=`git remote -v | grep -m1 '^origin' | sed -Ene's#.*https://([^[:space:]]*).*#\1#p'`
 	if [ -z "$REPO_URL" ]; then
-		echo "ERROR:    Could not identify Repo url."
-		echo "It is possible this repo is already using SSH instead of HTTPS."
+		>&2 echo "ERROR:    Could not identify Repo url."
+		>&2 echo "It is possible this repo is already using SSH instead of HTTPS."
 		exit
 	fi
 
-	USER=`echo $REPO_URL | sed -Ene's#https://github.com/([^/]*)/(.*).git#\1#p'`
+	GIT_PROVIER=`echo $REPO_URL | sed -Ene's#([^\:]*)[:/][^/]*/(.*).git#\1#p'`
+	if [ -z "$GIT_PROVIER" ]; then
+		>&2 echo "ERROR:    Could not identify git provider. Not changing the URL."
+		exit
+	fi
+
+	USER=`echo $REPO_URL | sed -Ene's#[^\:]*[:/]([^/]*)/(.*).git#\1#p'`
 	if [ -z "$USER" ]; then
-		echo "ERROR:    Could not identify User."
+		>&2 echo "ERROR:    Could not identify User."
 		exit
 	fi
 
-	REPO=`echo $REPO_URL | sed -Ene's#https://github.com/([^/]*)/(.*).git#\2#p'`
+	REPO=`echo $REPO_URL | sed -Ene's#[^\:]*[:/]([^/]*)/(.*).git#\2#p'`
 	if [ -z "$REPO" ]; then
-		echo "ERROR:    Could not identify Repo."
+		>&2 echo "ERROR:    Could not identify Repo."
 		exit
 	fi
 
-	NEW_URL="git@github.com:${USER}/${REPO}.git"
+	NEW_URL="git@${GIT_PROVIER}:${USER}/${REPO}.git"
 	echo "Changing repo url from "
 	echo "'$REPO_URL'"
 	echo "        to "

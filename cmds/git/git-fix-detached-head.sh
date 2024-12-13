@@ -30,6 +30,7 @@ Updates the commands installed from \"https://github.com/jolatechno/cli-utils.gi
 
 Used to fix a \"git detached HEAD\" error without loosing changes.
 
+
 Usage: \"git-fix-detached-head\"
 	-h help
 
