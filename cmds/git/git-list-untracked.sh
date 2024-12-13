@@ -28,38 +28,27 @@ print_usage() {
 
 Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
 
-Copy untracked files from one repo (the \"source\" repo) to another similar repo (which you should be at the root of). This can be used to restore backup after clowning a repo.
+List untracked files
 
 
-Usage: \"git-sync-untracked\"
+Usage: \"git-list-untracked\"
 	-h help
 
-	-s [mandatory] source repository
 	-r recursive (relative to submodules)
-	-y copy without asking for confirmation
 "
 }
 
-recursive=
-ask=true
-source=
+recursive=false
 
-while getopts 'hrys:' flag; do
+while getopts 'hr' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
-	r) recursive="-r";;
-	s) source="${OPTARG}";;
-	y) ask=false;;
+	r) recursive=true;;
 	*) print_usage;
 		exit 1 ;;
 	esac
 done
-
-if [ -z ${source} ]; then
-	>&2 echo "ERROR:    No source repository provided."
-	exit
-fi
 
 if ! command -v git &> /dev/null; then
 	read -p "git not found, install ? [Y|n] " prompt
@@ -77,5 +66,4 @@ if ! command -v git &> /dev/null; then
 	fi
 fi
 
-untracked_files=$(cd source && git-list-untracked ${recursive})
 # TODO

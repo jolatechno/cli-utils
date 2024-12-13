@@ -111,6 +111,18 @@ Usage: "choose-gpg-key"
 		ATTENTION: is pretty unsafe because you may have found the wrong key.
 ```
 
+### _git-list-untracked_
+
+```bash
+List untracked files
+
+
+Usage: "git-list-untracked"
+	-h help
+
+	-r recursive (relative to submodules)
+```
+
 ### _gitcheat_
 
 ```bash
@@ -202,6 +214,20 @@ Usage: "git-delete-history"
 	-s (for "git-stage-commit") max added file size [Mb], default is -1 (not limit).
 		If negative, will fallback to gitup.
 	-p (for "git-stage-commit") push only at the end (default behaviour is to push at each commit)
+```
+
+### _git-sync-untracked_
+
+```bash
+Copy untracked files from one repo (the "source" repo) to another similar repo (which you should be at the root of). This can be used to restore backup after clowning a repo.
+
+
+Usage: "git-sync-untracked"
+	-h help
+
+	-s [mandatory] source repository
+	-r recursive (relative to submodules)
+	-y copy without asking for confirmation
 ```
 
 ### _git-fix-detached-head_
