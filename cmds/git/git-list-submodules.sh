@@ -34,18 +34,21 @@ List all submodules in the current repo.
 Usage: \"git-list-submodules\"
 	-h help
 
+	-r recursivly list submodules (thus list submodules of submodules) [not yet implemented]
 	-p print path
 	-u print url
 "
 }
 
+recursive=false
 path=false
 url=false
 
-while getopts 'hpu' flag; do
+while getopts 'hpur' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
+	r) recursive=true;;
 	p) path=true;;
 	u) url=true;;
 	esac
@@ -66,6 +69,8 @@ if ! command -v git &> /dev/null; then
 		exit 0
 	fi
 fi
+
+# TODO : recursive
 
 git_root=$(git rev-parse --show-toplevel)
 list=

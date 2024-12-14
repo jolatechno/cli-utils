@@ -82,6 +82,7 @@ List all submodules in the current repo.
 Usage: "git-list-submodules"
 	-h help
 
+	-r recursivly list submodules (thus list submodules of submodules) [not yet implemented]
 	-p print path
 	-u print url
 ```
