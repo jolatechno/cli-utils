@@ -56,7 +56,7 @@ while getopts 'hn:sd' flag; do
 	esac
 done
 
-if [ "${set}" = true && "${delete}" = true ]; then
+if [ "${set}" = true ] && [ "${delete}" = true ]; then
 	>&2  echo "ERROR:   can't set and delete account at the same time"
 	exit 1
 fi
@@ -77,4 +77,58 @@ if ! command -v git &> /dev/null; then
 	fi
 fi
 
-# TODO
+account="user"
+if [ "${account_num}" != 0 ]; then
+	account="${account}${account_num}"
+fi
+
+if [ "${set}" = true ]; then
+	if [ "${account_num}" = 0 ]; then
+		>&2 echo "Can't set the 0th git account as it is the default git profile"
+		>&2 echo ""
+		>&2 echo "Modify using normal git commands:"
+		>&2 echo ""
+		>&2 echo "   git config --global user.name  \"name\""
+		>&2 echo "   git config --global user.email \"email\""
+		exit 1
+	fi
+
+	read -p 'Enter git username: ' name
+	if [ ! -z "${name}" ]; then
+		git config --global ${account}.name "${name}"
+	else
+		>&2 echo "Did not read any name, skipping"
+	fi
+
+	read -p 'Enter git email: ' email
+	if [ ! -z "${email}" ]; then
+		git config --global ${account}.email "${email}"
+	else
+		>&2 echo "Did not read any email, skipping"
+	fi
+elif [ "${delete}" = true ]; then
+	if [ "${account_num}" = 0 ]; then
+		>&2 echo "Can't delete the 0th git account as it is the default git profile"
+		exit 1
+	fi
+
+	read -p "Are you sure you want to delete the ${account_num}th git profile ? [Y|n] " prompt
+	if [[ "${prompt}" == "Y" ]]; then
+		git config --global --unset ${account}.name
+		git config --global --unset ${account}.email
+	fi
+else
+	name=$(git config --list --global | grep "${account}.name" | head -n 1 |  sed -n -e 's/^.*=//p')
+	if [ ! -z "${name}" ]; then
+		git config --local user.name "${name}"
+	else
+		>&2 echo "Did not read any name in \"${account}.name\", skipping"
+	fi
+
+	email=$(git config --list --global | grep "${account}.email" | head -n 1 |  sed -n -e 's/^.*=//p')
+	if [ ! -z "${email}" ]; then
+		git config --local user.email "${email}"
+	else
+		>&2 echo "Did not read any email in \"${account}.email\", skipping"
+	fi
+fi

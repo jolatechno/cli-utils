@@ -131,7 +131,7 @@ if [[ $prompt == "Y" ]]; then
 			>&2 echo "Key not found !"
 		else
 			git config remote.origin.gcrypt-participants "${key_fingerprint}" && \
-			git config --global user.signingkey "${key_fingerprint}"
+			git config --local user.signingkey "${key_fingerprint}"
 		fi
 	fi
 
