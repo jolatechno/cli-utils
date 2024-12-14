@@ -28,28 +28,38 @@ print_usage() {
 
 Updates the commands installed from \"https://github.com/jolatechno/cli-utils.git\"
 
-Redownload all submodules from scratch (WARNING : will loose untracked files)
+Used to switch (and manage) between multiple saved git account.
 
 
-Usage: \"git-redownload-submodules\"
+Usage: \"git-switch-account\"
 	-h help
 
-	-r redownload recursively
-	-Y redownload all submodules without asking, !! DANGEROUS !!
+	-n acount number (default 0 = globaly set account)
+	-s set account (will not change the local git account)
+	-d delete the acount
 "
 }
 
-ask=true
-recursive=false
+account_num=0
+set=false
+delete=false
 
-while getopts 'hrY' flag; do
+while getopts 'hn:sd' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
-	r) recursive=true;;
-	Y) ask=false;;
+	n) account_num="${OPTARG}";;
+	s) set=true;;
+	d) delete=true;;
+	*) print_usage;
+		exit 1 ;;
 	esac
 done
+
+if [ "${set}" = true && "${delete}" = true ]; then
+	>&2  echo "ERROR:   can't set and delete account at the same time"
+	exit 1
+fi
 
 if ! command -v git &> /dev/null; then
 	read -p "git not found, install ? [Y|n] " prompt
@@ -67,42 +77,4 @@ if ! command -v git &> /dev/null; then
 	fi
 fi
 
-redownload() {
-	readarray -t submodules <<< $(git-list-submodules -pu)
-
-	IFS=$'\n'
-	for i in `seq 0 $(( ${#submodules[@]} - 1 ))`; do
-		readarray -d ' ' -t path_url <<< "${submodules[$i]}"
-		path=${path_url[0]}
-		url=${path_url[1]}
-		url=${url%$'\n'}
-
-		if [ -z "${path}" ] || [ -z "${url}" ]; then
-			continue
-		fi
-
-		prompt="Y"
-		if [ "${ask}" = true ]; then
-			read -p "Redownload \"${url}\" to \"${path}\" ? [Y|n] " prompt
-		fi
-
-		if [[ "${prompt}" == "Y" ]]; then
-			if [ -d ${path} ]; then
-				rm -r ${path}
-			else
-				dir=$(dirname ${path})
-				if [ ! -d "${dir}" ]; then
-					mkdir -p ${dir}
-				fi
-			fi
-			git rm --cached -r ${path}
-			git submodule add -f ${url} ${path}
-
-			if [ "${recursive}" = true ]; then
-				(cd ${path} && redownload)
-			fi
-		fi
-	done
-}
-
-redownload
+# TODO

@@ -46,7 +46,7 @@ while getopts 'h' flag; do
 done
 
 if [ "$(id -un)" != "root" ]; then
-	echo "root privilege needed..."
+	>&2 echo "root privilege needed..."
 	exit 1
 fi
 

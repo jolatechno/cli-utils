@@ -54,7 +54,7 @@ while getopts 't:d:h' flag; do
 done
 
 if [ "$EUID" -ne 0 ]; then
-	echo "Please run as root"
+	>&2 echo "root privilege needed..."
 	exit
 fi
 
@@ -66,7 +66,7 @@ if ! command -v hdparm &> /dev/null; then
 		elif command -v apt-get &> /dev/null; then
 			sudo apt-get install hdparm
 		else
-			echo "Installing command not found, try to install yourself."
+			>&2 echo "Installing command not found, try to install yourself."
 			exit 1
 		fi
 	else

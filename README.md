@@ -242,6 +242,20 @@ Usage: "git-fix-detached-head"
 	-b set branch name, default is whatever beanch you are on
 ```
 
+### _git-switch-account_
+
+```bash
+Used to switch (and manage) between multiple saved git account.
+
+
+Usage: "git-switch-account"
+	-h help
+
+	-n acount number (default 0 = globaly set account)
+	-s set account (will not change the local git account)
+	-d delete the acount
+```
+
 ## photo
 
 

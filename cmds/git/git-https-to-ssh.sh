@@ -34,7 +34,7 @@ if ! command -v git &> /dev/null; then
 		elif command -v apt-get &> /dev/null; then
 			sudo apt-get install git
 		else
-			echo "Installing command not found, try to install yourself."
+			>&2 echo "Installing command not found, try to install yourself."
 			exit 1
 		fi
 	else
@@ -53,25 +53,25 @@ if [[ $prompt == "Y" ]]; then
 	if [ -z "$REPO_URL" ]; then
 		>&2 echo "ERROR:    Could not identify Repo url."
 		>&2 echo "It is possible this repo is already using SSH instead of HTTPS."
-		exit
+		exit 1
 	fi
 
 	GIT_PROVIER=`echo $REPO_URL | sed -Ene's#([^\:]*)[:/][^/]*/(.*).git#\1#p'`
 	if [ -z "$GIT_PROVIER" ]; then
 		>&2 echo "ERROR:    Could not identify git provider. Not changing the URL."
-		exit
+		exit 1
 	fi
 
 	USER=`echo $REPO_URL | sed -Ene's#[^\:]*[:/]([^/]*)/(.*).git#\1#p'`
 	if [ -z "$USER" ]; then
 		>&2 echo "ERROR:    Could not identify User."
-		exit
+		exit 1
 	fi
 
 	REPO=`echo $REPO_URL | sed -Ene's#[^\:]*[:/]([^/]*)/(.*).git#\2#p'`
 	if [ -z "$REPO" ]; then
 		>&2 echo "ERROR:    Could not identify Repo."
-		exit
+		exit 1
 	fi
 
 	NEW_URL="git@${GIT_PROVIER}:${USER}/${REPO}.git"

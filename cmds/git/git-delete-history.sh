@@ -83,7 +83,7 @@ if ! command -v git &> /dev/null; then
 		elif command -v apt-get &> /dev/null; then
 			sudo apt-get install git
 		else
-			echo "Installing command not found, try to install yourself."
+			>&2 echo "Installing command not found, try to install yourself."
 			exit 1
 		fi
 	else
@@ -108,20 +108,20 @@ if [[ "${prompt}" == "Y" ]]; then
 	if [ "${hard_delete}" = true ]; then
 		REPO_URL=`git remote -v | grep -m1 '^origin' | sed -Ene's#.*git@([^[:space:]]*).*#\1#p'`
 		if [ -z "$REPO_URL" ]; then
-			echo "ERROR:    Could not identify Repo url."
-			exit
+			>&2 echo "ERROR:    Could not identify Repo url."
+			exit 1
 		fi
 
 		USER=`echo $REPO_URL | sed -Ene's#github.com[:/]([^/]*)/(.*)#\1#p'`
 		if [ -z "$USER" ]; then
-			echo "ERROR:    Could not identify User."
-			exit
+			>&2 echo "ERROR:    Could not identify User."
+			exit 1
 		fi
 
 		REPO=`echo $REPO_URL | sed -Ene's#github.com[:/]([^/]*)/(.*)#\2#p'`
 		if [ -z "$REPO" ]; then
-			echo "ERROR:    Could not identify Repo."
-			exit
+			>&2 echo "ERROR:    Could not identify Repo."
+			exit 1
 		fi
 
 		key_fingerprint=$(git config --list --local | grep remote.origin.gcrypt-participants | head -n 1 | sed -n -e 's/^.*=//p')

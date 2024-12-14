@@ -77,7 +77,7 @@ if ! command -v ps2pdf &> /dev/null; then
 		elif command -v apt-get &> /dev/null; then
 			sudo apt-get install ghostscript
 		else
-			echo "Installing command not found, try to install yourself."
+			>&2 echo "Installing command not found, try to install yourself."
 			exit 1
 		fi
 	else

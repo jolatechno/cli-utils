@@ -67,7 +67,7 @@ if ! command -v git &> /dev/null; then
 		elif command -v apt-get &> /dev/null; then
 			sudo apt-get install git
 		else
-			echo "Installing command not found, try to install yourself."
+			>&2 echo "Installing command not found, try to install yourself."
 			exit 1
 		fi
 	else
@@ -82,7 +82,7 @@ if ! command -v gpg &> /dev/null; then
 		elif command -v apt-get &> /dev/null; then
 			sudo apt-get install gpg
 		else
-			echo "Installing command not found, try to install yourself."
+			>&2 echo "Installing command not found, try to install yourself."
 			exit 1
 		fi
 	else
@@ -114,7 +114,7 @@ for try in `seq 1 1 ${n_try}`; do
 		if [ "${continue}" = Y ]; then
 			key=$(echo ${full_key} | sed -Ene 's#.*::([^:]+)::*.#\1#p' | sed 's/..$//')
 			echo ${key}
-			exit
+			exit 0
 		fi
 	fi
 	>&2 echo ""
