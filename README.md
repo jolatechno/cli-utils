@@ -82,7 +82,7 @@ List all submodules in the current repo.
 Usage: "git-list-submodules"
 	-h help
 
-	-r recursivly list submodules (thus list submodules of submodules) [not yet implemented]
+	-r recursivly list submodules (thus list submodules of submodules)
 	-p print path
 	-u print url
 ```
@@ -187,6 +187,8 @@ Usage: "gcrypt-set-repo"
 
 ```bash
 Redownload all submodules from scratch (WARNING : will loose untracked files)
+
+WARNING: Is very likely to lead to loss of untracked files, please backup before use.
 
 
 Usage: "git-redownload-submodules"
