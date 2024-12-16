@@ -34,7 +34,7 @@ List all submodules in the current repo.
 Usage: \"git-list-submodules\"
 	-h help
 
-	-r recursivly list submodules (thus list submodules of submodules) [not yet implemented]
+	-r recursivly list submodules (thus list submodules of submodules)
 	-p print path
 	-u print url
 "
@@ -70,6 +70,10 @@ if ! command -v git &> /dev/null; then
 	fi
 fi
 
+if [ "${path}" = false ] && [ "${url}" = false ]; then
+	>&2 echo "WARNING:   Nothing to do"
+fi
+
 git_root=$(git rev-parse --show-toplevel)
 
 list_submodules() {
@@ -97,13 +101,11 @@ list_submodules() {
 				echo "${root_path}${path_list[$i]}"
 			fi
 		else
-			if [ "${url}" = true ]; then
-				echo "${urls[$i]}"
-			fi
+			echo "${urls[$i]}"
 		fi
 	done
 
-	if [ "${recursive}" = true ] && [ ! -z "$(git config --file ".gitmodules" --get-regexp path | awk '{ print $2 }')" ]; then
+	if [ "${recursive}" = true ] && [ ! "${submodule_size}" = 0 ]; then
 		for submodule_path in $(git config --file ".gitmodules" --get-regexp path | awk '{ print $2 }'); do
 			(cd ./${submodule_path} && list_submodules "${root_path}${submodule_path}/")
 		done
