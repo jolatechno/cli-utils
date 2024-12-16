@@ -30,6 +30,8 @@ Updates the commands installed from \"https://github.com/jolatechno/cli-utils.gi
 
 Redownload all submodules from scratch (WARNING : will loose untracked files)
 
+WARNING: Is very likely to lead to loss of untracked files, please backup before use.
+
 
 Usage: \"git-redownload-submodules\"
 	-h help
