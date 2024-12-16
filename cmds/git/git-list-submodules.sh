@@ -70,24 +70,44 @@ if ! command -v git &> /dev/null; then
 	fi
 fi
 
-# TODO : recursive
-
 git_root=$(git rev-parse --show-toplevel)
-list=
-if [ "${path}" = true ]; then
-	readarray -t list <<< $(git config --file "${git_root}/.gitmodules" --get-regexp path | awk '{ print $2 }')
-fi
-if [ "${url}" = true ]; then
-	if [ -z "${list}" ]; then
-		readarray -t list <<< $(git config --file "${git_root}/.gitmodules" --get-regexp url | awk '{ print $2 }')
-	else
-		readarray -t urls <<< $(git config --file "${git_root}/.gitmodules" --get-regexp url | awk '{ print $2 }')
-		for i in `seq 0 $(( ${#urls[@]} - 1 ))`; do
-			list[$i]="${list[$i]} ${urls[$i]}"
+
+list_submodules() {
+	root_path="$1"
+
+	submodule_size=0
+	if [ "${path}" = true ]; then
+		readarray -t path_list <<< $(git config --file ".gitmodules" --get-regexp path | awk '{ print $2 }')
+		if [ ! -z "${path_list}" ]; then
+			submodule_size=${#path_list[@]}
+		fi
+	fi
+	if [ "${url}" = true ]; then
+		readarray -t urls <<< $(git config --file ".gitmodules" --get-regexp url | awk '{ print $2 }')
+		if [ ! -z "${urls}" ]; then
+			submodule_size=${#urls[@]}
+		fi
+	fi
+
+	for i in `seq 0 $(( ${submodule_size} - 1 ))`; do
+		if [ "${path}" = true ]; then
+			if [ "${url}" = true ]; then
+				echo "${root_path}${path_list[$i]} ${urls[$i]}"
+			else
+				echo "${root_path}${path_list[$i]}"
+			fi
+		else
+			if [ "${url}" = true ]; then
+				echo "${urls[$i]}"
+			fi
+		fi
+	done
+
+	if [ "${recursive}" = true ] && [ ! -z "$(git config --file ".gitmodules" --get-regexp path | awk '{ print $2 }')" ]; then
+		for submodule_path in $(git config --file ".gitmodules" --get-regexp path | awk '{ print $2 }'); do
+			(cd ./${submodule_path} && list_submodules "${root_path}${submodule_path}/")
 		done
 	fi
-fi
+}
 
-for i in `seq 0 $(( ${#list[@]} - 1 ))`; do
-	echo "${list[$i]}"
-done
+(cd ${git_root} && list_submodules "")
