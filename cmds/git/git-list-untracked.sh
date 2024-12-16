@@ -66,4 +66,21 @@ if ! command -v git &> /dev/null; then
 	fi
 fi
 
-# TODO
+git_root=$(git rev-parse --show-toplevel)
+
+IFS='\n'
+if [ "${recursive}" = true ]; then
+	readarray -t path_list <<< $(git-list-submodules -pr)
+	for path in "${path_list[@]}"; do
+		(cd "${git_root}/${path}" && \
+		readarray -t untracked_list <<< $(git ls-files --others) && \
+		for untracked in "${untracked_list[@]}"; do
+			if [ ! -z "${untracked}" ]; then
+				echo "${path}/${untracked}"
+			fi
+		done)
+	done
+else
+	git ls-files --others
+fi
+
