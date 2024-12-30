@@ -70,7 +70,7 @@ while getopts 'hm:s:b:pv' flag; do
 done
 
 if [ "${commit_name_default}" = true ]; then
-	read -p "git not found, install ? [Y|n] " prompt
+	read -p "did not provide commit name, continue (unrecommanded) [Y|n] " prompt
 	if [[ $prompt != "Y" ]]; then
 		exit 0
 	fi
