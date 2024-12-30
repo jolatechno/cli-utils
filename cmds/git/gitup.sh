@@ -46,6 +46,7 @@ Usage: \"gitup\"
 
 add_files=true
 commit_name=update
+commit_name_default=true
 branch=None
 verbose=false
 stage_commit_args=
@@ -55,7 +56,8 @@ while getopts 'hm:Ab:v' flag; do
 	h) print_usage;
 		exit 1;;
 	A) add_files=false ;;
-	m) commit_name="${OPTARG}";;
+	m) commit_name="${OPTARG}";
+	   commit_name_default=false;;
 	b) branch="${OPTARG}";;
 	v) verbose=true;
 	   stage_commit_args+=-v;;
@@ -63,6 +65,13 @@ while getopts 'hm:Ab:v' flag; do
 		exit 1 ;;
 	esac
 done
+
+if [ "${commit_name_default}" = true ]; then
+	read -p "git not found, install ? [Y|n] " prompt
+	if [[ $prompt != "Y" ]]; then
+		exit 0
+	fi
+fi
 
 if ! command -v git &> /dev/null; then
 	read -p "git not found, install ? [Y|n] " prompt

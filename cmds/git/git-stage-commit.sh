@@ -46,6 +46,7 @@ Usage: \"git-stage-commit\"
 }
 
 max_file_size_default=true
+commit_name_default=true
 max_file_size=25
 commit_name=update
 push_each=true
@@ -58,7 +59,8 @@ while getopts 'hm:s:b:pv' flag; do
 		exit 1;;
 	s) max_file_size="${OPTARG}";
 	   max_file_size_default=false;;
-	m) commit_name="${OPTARG}";;
+	m) commit_name="${OPTARG}";
+	   commit_name_default=false;;
 	b) branch="${OPTARG}";;
 	p) push_each=false;;
 	v) verbose=true;;
@@ -66,6 +68,13 @@ while getopts 'hm:s:b:pv' flag; do
 		exit 1 ;;
 	esac
 done
+
+if [ "${commit_name_default}" = true ]; then
+	read -p "git not found, install ? [Y|n] " prompt
+	if [[ $prompt != "Y" ]]; then
+		exit 0
+	fi
+fi
 
 if ! command -v git &> /dev/null; then
 	read -p "git not found, install ? [Y|n] " prompt
