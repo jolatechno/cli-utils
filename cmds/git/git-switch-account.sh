@@ -41,23 +41,35 @@ Usage: \"git-switch-account\"
 }
 
 account_num=0
+list=true
 set=false
 delete=false
 
-while getopts 'hn:sd' flag; do
+while getopts 'hn:sdl' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
 	n) account_num="${OPTARG}";;
 	s) set=true;;
 	d) delete=true;;
+	l) list=true;;
 	*) print_usage;
 		exit 1 ;;
 	esac
 done
 
-if [ "${set}" = true ] && [ "${delete}" = true ]; then
-	>&2  echo "ERROR:   can't set and delete account at the same time"
+if [ "${set}" = true ]; then
+	if [ "${delete}" = true ]; then
+		>&2  echo "ERROR:   can't set and delete account at the same time"
+		exit 1
+	fi
+	if [ "${list}" = true ]; then
+		>&2  echo "ERROR:   can't set and list account at the same time"
+		exit 1
+	fi
+fi
+if [ "${delete}" = true ] && [ "${list}" = true ]; then
+	>&2  echo "ERROR:   can't delete and list account at the same time"
 	exit 1
 fi
 
@@ -117,6 +129,29 @@ elif [ "${delete}" = true ]; then
 		git config --global --unset ${account}.name
 		git config --global --unset ${account}.email
 	fi
+elif [ "${list}" = true ]; then
+	account_num=0
+	while true; do
+		account="user"
+		if [ "${account_num}" != 0 ]; then
+			account="${account}${account_num}"
+		fi
+
+		name=$(git config --list --global | grep "${account}.name" | head -n 1 |  sed -n -e 's/^.*=//p')
+		email=$(git config --list --global | grep "${account}.email" | head -n 1 |  sed -n -e 's/^.*=//p')
+		if [ -z "${name}" ] || [ -z "${email}" ]; then
+			exit 0
+		fi
+
+		if [ "${account_num}" != 0 ]; then
+			echo ""
+		fi
+		echo "Profile \"${account}\" :"
+		echo "   user.name  \"${name}\""
+		echo "   user.email \"${email}\""
+
+		account_num=$((${account_num} + 1))
+	done
 else
 	name=$(git config --list --global | grep "${account}.name" | head -n 1 |  sed -n -e 's/^.*=//p')
 	if [ ! -z "${name}" ]; then
