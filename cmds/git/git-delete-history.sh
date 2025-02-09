@@ -50,6 +50,7 @@ Usage: \"git-delete-history\"
 git_params=
 max_file_size=-1
 commit_name=first_commit
+commit_name_default=true
 branch=None
 hard_delete=false
 use_https=false
@@ -63,7 +64,8 @@ while getopts 'hb:s:m:pSHv' flag; do
 		exit 1;;
 	s) max_file_size="${OPTARG}";
 	   max_file_size_default=false;;
-	m) commit_name="${OPTARG}";;
+	m) commit_name="${OPTARG}";
+	   commit_name_default=false;;
 	b) branch="${OPTARG}";;
 	p) git_params+=" -p";;
 	S) hard_delete=true;;
@@ -74,6 +76,13 @@ while getopts 'hb:s:m:pSHv' flag; do
 		exit 1 ;;
 	esac
 done
+
+if [ "${commit_name_default}" = true ]; then
+	read -p "did not provide commit name, continue (unrecommanded) [Y|n] " prompt
+	if [[ $prompt != "Y" ]]; then
+		exit 0
+	fi
+fi
 
 if ! command -v git &> /dev/null; then
 	read -p "git not found, install ? [Y|n] " prompt
