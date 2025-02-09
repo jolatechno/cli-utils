@@ -34,18 +34,32 @@ Used to switch (and manage) between multiple saved git account.
 Usage: \"git-switch-account\"
 	-h help
 
+	-l list all acounts
+
 	-n acount number (default 0 = globaly set account)
 	-s set account (will not change the local git account)
 	-d delete the acount
+	-k set a ssh key to use (host set in ~/.ssh/config)
+
+
+If you want to use this last option
+you need to setup an account in the ~/.ssh/config file
+as shown in https://gist.github.com/alejandro-martin/aabe88cf15871121e076f66b65306610
+
+You thus should have a entry in your ~/.ssh/config file looking like :
+  Host hostname
+  HostName host_url                        (github.com for example)
+  IdentityFile ~/.ssh/IdentityFileName
 "
 }
 
 account_num=0
-list=true
+list=false
 set=false
 delete=false
+set_host=false
 
-while getopts 'hn:sdl' flag; do
+while getopts 'hn:sdlk' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
@@ -53,6 +67,7 @@ while getopts 'hn:sdl' flag; do
 	s) set=true;;
 	d) delete=true;;
 	l) list=true;;
+	k) set_host=true;;
 	*) print_usage;
 		exit 1 ;;
 	esac
@@ -118,6 +133,26 @@ if [ "${set}" = true ]; then
 	else
 		>&2 echo "Did not read any email, skipping"
 	fi
+
+	if [ "${set_host}" = true ]; then
+		echo ""
+		echo "You have chosen to set a host for this account,"
+		echo "you thus need to setup an account in the ~/.ssh/config file"
+		echo "as shown in https://gist.github.com/alejandro-martin/aabe88cf15871121e076f66b65306610"
+		echo ""
+		echo "You thus should have a entry in your ~/.ssh/config file looking like :"
+		echo "  Host hostname"
+		echo "  HostName host_url                        (github.com for example)"
+		echo "  IdentityFile ~/.ssh/IdentityFileName"
+		echo ""
+
+		read -p 'Enter your hostname: ' hostname
+		if [ ! -z "${hostname}" ]; then
+			git config --global ${account}.host "${hostname}"
+		else
+			>&2 echo "Did not read any hostname, skipping"
+		fi
+	fi
 elif [ "${delete}" = true ]; then
 	if [ "${account_num}" = 0 ]; then
 		>&2 echo "Can't delete the 0th git account as it is the default git profile"
@@ -139,7 +174,8 @@ elif [ "${list}" = true ]; then
 
 		name=$(git config --list --global | grep "${account}.name" | head -n 1 |  sed -n -e 's/^.*=//p')
 		email=$(git config --list --global | grep "${account}.email" | head -n 1 |  sed -n -e 's/^.*=//p')
-		if [ -z "${name}" ] || [ -z "${email}" ]; then
+		host=$(git config --list --global | grep "${account}.host" | head -n 1 |  sed -n -e 's/^.*=//p')
+		if [ -z "${name}" ] && [ -z "${email}" ]; then
 			exit 0
 		fi
 
@@ -147,8 +183,15 @@ elif [ "${list}" = true ]; then
 			echo ""
 		fi
 		echo "Profile \"${account}\" :"
-		echo "   user.name  \"${name}\""
-		echo "   user.email \"${email}\""
+		if [ ! -z "${name}" ]; then
+			echo "   user.name  \"${name}\""
+		fi
+		if [ ! -z "${email}" ]; then
+			echo "   user.email \"${email}\""
+		fi
+		if [ ! -z "${host}" ]; then
+			echo "   user.host \"${host}\""
+		fi
 
 		account_num=$((${account_num} + 1))
 	done
@@ -165,5 +208,36 @@ else
 		git config --local user.email "${email}"
 	else
 		>&2 echo "Did not read any email in \"${account}.email\", skipping"
+	fi
+
+	host=$(git config --list --global | grep "${account}.host" | head -n 1 |  sed -n -e 's/^.*=//p')
+	if [ ! -z "${host}" ]; then
+		USER_REPO=`git remote -v | grep -m1 '^origin' | sed -Ene's#.*:([^[:space:]]*).*#\1#p'`
+		if [ -z "$USER_REPO" ]; then
+			>&2 echo "ERROR:    Could not identify Repo url."
+			>&2 echo "Coud not set hostname, skipping"
+			exit 1
+		fi
+
+		USER=`echo $USER_REPO | sed -Ene's#([^/]*)/(.*).git#\1#p'`
+		if [ -z "$USER" ]; then
+			>&2 echo "ERROR:    Could not identify User."
+			>&2 echo "Coud not set hostname, skipping"
+			exit 1
+		fi
+
+		REPO=`echo $USER_REPO | sed -Ene's#([^/]*)/(.*).git#\2#p'`
+		if [ -z "$REPO" ]; then
+			>&2 echo "ERROR:    Could not identify Repo."
+			>&2 echo "Coud not set hostname, skipping"
+			exit 1
+		fi
+
+		NEW_URL="git@${host}:${USER}/${REPO}.git"
+		echo "Changing repo url to $NEW_URL"
+
+		git remote set-url origin $NEW_URL
+	else
+		>&2 echo "Did not read any host in \"${account}.host\""
 	fi
 fi
