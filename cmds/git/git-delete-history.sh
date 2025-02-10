@@ -167,9 +167,9 @@ if [[ "${prompt}" == "Y" ]]; then
 		if [ -f "${git_root}/.gitignore"  ]; then
 			git add "${git_root}/.gitignore"
 		fi
-		git commit --allow-empty -am 'root commit'
+		git commit --allow-empty -am "root commit"
 	fi
-	git-stage-commit -s ${max_file_size} -m ${commit_name} -b ${branch} ${git_params} ${stage_commit_args}
+	git-stage-commit -s ${max_file_size} -m "${commit_name}" -b ${branch} ${git_params} ${stage_commit_args}
 else
 	exit 0
 fi
