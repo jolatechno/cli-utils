@@ -92,15 +92,15 @@ pull() {
 		fi
 
 		if [[ "${prompt}" == "Y" ]]; then
-			if [ "${recursive}" = true ]; then
-				(cd ${path} && pull)
-			fi
-
 			branch=$(git rev-parse --abbrev-ref HEAD)
 			if [ "${force}" = true ]; then
 				git pull origin ${branch}
 			else
 				git pull -fr origin ${branch}
+			fi
+
+			if [ "${recursive}" = true ]; then
+				(cd ${path} && pull)
 			fi
 		fi
 	done
