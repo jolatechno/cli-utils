@@ -105,15 +105,22 @@ fi
 git_root=$(git rev-parse --show-toplevel)
 if [ -f "${git_root}/.gitmodules" ]; then
 	git add "${git_root}/.gitmodules"
-	submodules_path=$(git-list-submodules -p)
-	submodules_urls=$(git-list-submodules -u)
+	readarray -t submodules <<< $(git-list-submodules -pu)
 
-	for i in "${!submodules_path[@]}"; do 
-		git submodule add -f ${submodules_urls[$i]} "${git_root}/${submodules_path[$i]}"
+	OIFS=$IFS
+	IFS=$'\n'
+	for i in `seq 0 $(( ${#submodules[@]} - 1 ))`; do
+		readarray -d ' ' -t path_url <<< "${submodules[$i]}"
+		path=${path_url[0]}
+		url=${path_url[1]}
+		url=${url%$'\n'}
+
+		git submodule add -f ${url} "${git_root}/${path}"
 		if [ "${verbose}" = true ]; then
-			echo "adding submodule \"${submodules_urls[$i]}\" at path \"${submodules_path[$i]}\""
+			echo "adding submodule \"${url}\" at path \"${path}\""
 		fi
 	done
+	IFS=$OIFS
 fi
 
 if (( $max_file_size <= 0 )); then
@@ -146,6 +153,13 @@ else
 
 		for unformated_file in $to_add; do
 			file=$(printf "${unformated_file}")
+
+			if [ -d "${file}" ] && ( [ -d "${file}/.git" ] || [ -f "${file}/.git" ] ); then
+				if [ "${verbose}" = true ]; then
+					echo "'${file}' should be a submodule, ignoring"
+				fi
+				continue
+			fi
 
 			if [ ! -f "${file}" ] && [ ! -d "${file}" ]; then
 				git add "${file}"
