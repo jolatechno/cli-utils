@@ -72,6 +72,8 @@ if ! command -v git &> /dev/null; then
 	fi
 fi
 
+git_root=$(git rev-parse --show-toplevel)
+
 pull() {
 	readarray -t submodules <<< $(git-list-submodules -pu)
 
@@ -108,4 +110,4 @@ pull() {
 	done
 }
 
-pull
+(cd ${git_root} && pull)

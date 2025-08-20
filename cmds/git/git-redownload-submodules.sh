@@ -37,18 +37,23 @@ Usage: \"git-redownload-submodules\"
 	-h help
 
 	-r redownload recursively
+	-s skip deleting (only \"submodule add\" submodules)
 	-Y redownload all submodules without asking, !! DANGEROUS !!
 "
 }
 
 ask=true
 recursive=false
+skip_delete=false
+verbose=false
 
-while getopts 'hrY' flag; do
+while getopts 'hvrsY' flag; do
 	case "${flag}" in
 	h) print_usage;
 		exit 1;;
+	v) verbose=true;;
 	r) recursive=true;;
+	s) skip_delete=true;;
 	Y) ask=false;;
 	esac
 done
@@ -68,6 +73,8 @@ if ! command -v git &> /dev/null; then
 		exit 0
 	fi
 fi
+
+git_root=$(git rev-parse --show-toplevel)
 
 redownload() {
 	readarray -t submodules <<< $(git-list-submodules -pu)
@@ -97,8 +104,14 @@ redownload() {
 					mkdir -p ${dir}
 				fi
 			fi
-			git rm --cached -r ${path}
+			if [ "${skip_delete}" = false ]; then
+				git rm --cached -r ${path}
+			fi
+
 			git submodule add -f ${url} ${path}
+
+			if [ "${verbose}" = true ]; then
+				echo "redownloaded \"${url}\" at path \"${path}\""
 
 			if [ "${recursive}" = true ]; then
 				(cd ${path} && redownload)
@@ -107,4 +120,4 @@ redownload() {
 	done
 }
 
-redownload
+(cd ${git_root} redownload)

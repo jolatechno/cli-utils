@@ -170,6 +170,12 @@ if [[ "${prompt}" == "Y" ]]; then
 		git commit --allow-empty -am "root commit"
 	fi
 	git-stage-commit -s ${max_file_size} -m "${commit_name}" -b ${branch} ${git_params} ${stage_commit_args}
+
+	if [ "${verbose}" = true ]; then
+		git-redownload-submodules -sYv
+	else
+		git-redownload-submodules -sY
+	fi
 else
 	exit 0
 fi

@@ -102,27 +102,6 @@ if [ "${branch}" = None ]; then
 	branch=$(git rev-parse --abbrev-ref HEAD)
 fi
 
-git_root=$(git rev-parse --show-toplevel)
-if [ -f "${git_root}/.gitmodules" ]; then
-	git add "${git_root}/.gitmodules"
-	readarray -t submodules <<< $(git-list-submodules -pu)
-
-	OIFS=$IFS
-	IFS=$'\n'
-	for i in `seq 0 $(( ${#submodules[@]} - 1 ))`; do
-		readarray -d ' ' -t path_url <<< "${submodules[$i]}"
-		path=${path_url[0]}
-		url=${path_url[1]}
-		url=${url%$'\n'}
-
-		git submodule add -f ${url} "${git_root}/${path}"
-		if [ "${verbose}" = true ]; then
-			echo "adding submodule \"${url}\" at path \"${path}\""
-		fi
-	done
-	IFS=$OIFS
-fi
-
 if (( $max_file_size <= 0 )); then
 	echo -e "Falling back to 'gitup'.. \n"
 
@@ -174,7 +153,7 @@ else
 				this_file_size=$(echo $this_file_size | tr -d ' ')
 				if [ -d "${file}" ]; then
 					this_file_size=0
-					size_from="0 size, either symlink of git submodule"
+					size_from="0 size, probably symlink of directory"
 				else
 					if [[ ! $this_file_size =~ ^[0-9] ]] || [ -z "${this_file_size}" ]; then
 						this_file_size=$(du -sh --block-size=K "${file}" | awk -F"K" '{print $1}')
