@@ -121,4 +121,4 @@ redownload() {
 	done
 }
 
-(cd ${git_root} redownload)
+(cd ${git_root} && redownload)
