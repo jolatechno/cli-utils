@@ -97,7 +97,9 @@ redownload() {
 
 		if [[ "${prompt}" == "Y" ]]; then
 			if [ -d ${path} ]; then
-				rm -r ${path}
+				if [ "${skip_delete}" = false ]; then
+					rm -r ${path}
+				fi
 			else
 				dir=$(dirname ${path})
 				if [ ! -d "${dir}" ]; then
