@@ -97,12 +97,13 @@ if [[ $prompt == "Y" ]]; then
 		fi
 
 		if [ "${continue_}" = true ]; then
+		echo "arzeez"
 			GIT_PROVIER=`echo $REPO_URL | sed -Ene's#([^\:]*)[:/][^/]*/(.*).git#\1#p'`
 			if [ -z "$GIT_PROVIER" ]; then
 				>&2 echo "ERROR:    Could not identify git provider. Not changing the URL."
 			else
 
-				USER=`echo $REPO_URL | sed -Ene's#[^\:]*[:/]([^/]*)/(.*).git#\1#p'
+				USER=`echo $REPO_URL | sed -Ene's#[^\:]*[:/]([^/]*)/(.*).git#\1#p'`
 				if [ -z "$USER" ]; then
 					>&2 echo "ERROR:    Could not identify User. Not changing the URL."
 				else
