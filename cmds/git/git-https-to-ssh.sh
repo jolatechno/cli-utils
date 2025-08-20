@@ -16,11 +16,14 @@ Usage: \"git-https-to-shh\":
 	-h help
 "
 }
+
+ask_prompt=true
 		
-while getopts 'h' flag; do
+while getopts 'hy' flag; do
 	case "${flag}" in
 		h) print_usage;
 			exit 1;;
+		y) ask_prompt=false;;
 		*) print_usage;
 			exit 1 ;;
 	esac
@@ -43,8 +46,12 @@ if ! command -v git &> /dev/null; then
 fi
 #!/bin/bash
 
-echo "WARNING: Only tested with github (for now)"
-read -p "Are you sure you want to continue? [Y|n] " prompt
+if [ "${ask_prompt}" = true ]; then
+	echo "WARNING: Only tested with github (for now)"
+	read -p "Are you sure you want to continue? [Y|n] " prompt
+else
+	prompt="Y"
+fi
 if [[ $prompt == "Y" ]]; then
 
 	#-- Script to automate https://help.github.com/articles/why-is-git-always-asking-for-my-password
