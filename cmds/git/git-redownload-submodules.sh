@@ -112,6 +112,7 @@ redownload() {
 
 			if [ "${verbose}" = true ]; then
 				echo "redownloaded \"${url}\" at path \"${path}\""
+			fi
 
 			if [ "${recursive}" = true ]; then
 				(cd ${path} && redownload)
