@@ -167,15 +167,17 @@ if [[ "${prompt}" == "Y" ]]; then
 		if [ -f "${git_root}/.gitignore"  ]; then
 			git add "${git_root}/.gitignore"
 		fi
+		if [ -f "${git_root}/.gitmodules"  ]; then
+			git add "${git_root}/.gitmodules"
+		fi
 		git commit --allow-empty -am "root commit"
 	fi
-	git-stage-commit -s ${max_file_size} -m "${commit_name}" -b ${branch} ${git_params} ${stage_commit_args}
-
 	if [ "${verbose}" = true ]; then
-		git-redownload-submodules -sYv
+		git-redownload-submodules -svY
 	else
 		git-redownload-submodules -sY
 	fi
+	git-stage-commit -s ${max_file_size} -m "${commit_name}" -b ${branch} ${git_params} ${stage_commit_args}
 else
 	exit 0
 fi
