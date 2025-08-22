@@ -149,7 +149,7 @@ else
 					echo "'${file}' deleted or moved"
 				fi
 			else
-				IFS=$' \t' read _ _ _ this_file_size _ <<< $(git ls-tree -r -l HEAD "${file}")
+				IFS=$' \t' read _ _ _ this_file_size _ <<< $(git ls-tree -r -l HEAD "${file}" 2> /dev/null)
 				this_file_size=$(echo $this_file_size | tr -d ' ')
 				if [ -d "${file}" ]; then
 					this_file_size=0
