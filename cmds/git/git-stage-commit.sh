@@ -194,7 +194,7 @@ else
 	done
 	IFS="$OIFS"
 
-	if ! [ "${push_each}" = true ]; then
+	if [ ! "${push_each}" = true ] || [ "${idx}" = 0 ]; then
 		echo -e "\nPushing at the end...\n"
 		git push -f origin ${branch}
 	fi
